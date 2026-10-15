@@ -10,12 +10,14 @@ use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\HotelController;
+use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\VoucherController;
 use App\Http\Controllers\Api\Admin\AirlineController as AdminAirlineController;
 use App\Http\Controllers\Api\Admin\AirportController as AdminAirportController;
 use App\Http\Controllers\Api\Admin\DestinationController as AdminDestinationController;
 use App\Http\Controllers\Api\Admin\FlightController as AdminFlightController;
 use App\Http\Controllers\Api\Admin\HotelController as AdminHotelController;
+use App\Http\Controllers\Api\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Api\Admin\RoomController as AdminRoomController;
 use App\Http\Controllers\Api\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\Admin\VoucherController as AdminVoucherController;
@@ -43,6 +45,7 @@ Route::prefix('v1')->group(function () {
 
     Route::get('/hotels', [HotelController::class, 'index'])->name('api.v1.hotels.index');
     Route::get('/hotels/{id}', [HotelController::class, 'show'])->name('api.v1.hotels.show');
+    Route::get('/hotels/{id}/reviews', [ReviewController::class, 'hotelReviews'])->name('api.v1.hotels.reviews');
 
     Route::get('/flights', [FlightController::class, 'index'])->name('api.v1.flights.index');
     Route::get('/flights/{id}', [FlightController::class, 'show'])->name('api.v1.flights.show');
@@ -92,10 +95,17 @@ Route::prefix('v1')->group(function () {
         Route::get('/bookings/{code}/confirmation', [PaymentController::class, 'confirmation'])->name('api.v1.bookings.confirmation');
 
         // -----------------------------------------------------------------
+        // -----------------------------------------------------------------
         // Voucher Promo & Discounts
         // -----------------------------------------------------------------
         Route::post('/vouchers/apply', [VoucherController::class, 'apply'])->name('api.v1.vouchers.apply');
         Route::get('/vouchers/usages', [VoucherController::class, 'usages'])->name('api.v1.vouchers.usages');
+
+        // -----------------------------------------------------------------
+        // Review & Rating System
+        // -----------------------------------------------------------------
+        Route::post('/reviews', [ReviewController::class, 'store'])->name('api.v1.reviews.store');
+        Route::get('/reviews/my', [ReviewController::class, 'myReviews'])->name('api.v1.reviews.my');
 
         // -----------------------------------------------------------------
         // Role Protected Endpoints (Staff & Admin)
@@ -137,6 +147,11 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('flights', AdminFlightController::class);
             Route::apiResource('vouchers', AdminVoucherController::class);
             Route::apiResource('users', AdminUserController::class);
+
+            // Review moderation
+            Route::get('/reviews', [AdminReviewController::class, 'index'])->name('api.v1.admin.reviews.index');
+            Route::patch('/reviews/{review}/status', [AdminReviewController::class, 'updateStatus'])->name('api.v1.admin.reviews.update-status');
+            Route::delete('/reviews/{review}', [AdminReviewController::class, 'destroy'])->name('api.v1.admin.reviews.destroy');
         });
     });
 });
