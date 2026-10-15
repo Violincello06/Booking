@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\HotelController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\VoucherController;
 use App\Http\Controllers\Api\Admin\AirlineController as AdminAirlineController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\Api\Admin\AirportController as AdminAirportController;
 use App\Http\Controllers\Api\Admin\DestinationController as AdminDestinationController;
 use App\Http\Controllers\Api\Admin\FlightController as AdminFlightController;
 use App\Http\Controllers\Api\Admin\HotelController as AdminHotelController;
+use App\Http\Controllers\Api\Admin\NotificationController as AdminNotificationController;
 use App\Http\Controllers\Api\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Api\Admin\RoomController as AdminRoomController;
 use App\Http\Controllers\Api\Admin\UserController as AdminUserController;
@@ -108,6 +110,15 @@ Route::prefix('v1')->group(function () {
         Route::get('/reviews/my', [ReviewController::class, 'myReviews'])->name('api.v1.reviews.my');
 
         // -----------------------------------------------------------------
+        // Notification System
+        // -----------------------------------------------------------------
+        Route::get('/notifications', [NotificationController::class, 'index'])->name('api.v1.notifications.index');
+        Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])->name('api.v1.notifications.unread-count');
+        Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('api.v1.notifications.mark-as-read');
+        Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('api.v1.notifications.mark-all-read');
+        Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('api.v1.notifications.destroy');
+
+        // -----------------------------------------------------------------
         // Role Protected Endpoints (Staff & Admin)
         // -----------------------------------------------------------------
         Route::middleware('role:staff,admin')->prefix('staff')->group(function () {
@@ -152,6 +163,10 @@ Route::prefix('v1')->group(function () {
             Route::get('/reviews', [AdminReviewController::class, 'index'])->name('api.v1.admin.reviews.index');
             Route::patch('/reviews/{review}/status', [AdminReviewController::class, 'updateStatus'])->name('api.v1.admin.reviews.update-status');
             Route::delete('/reviews/{review}', [AdminReviewController::class, 'destroy'])->name('api.v1.admin.reviews.destroy');
+
+            // Notification broadcast & system list
+            Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('api.v1.admin.notifications.index');
+            Route::post('/notifications/broadcast', [AdminNotificationController::class, 'broadcast'])->name('api.v1.admin.notifications.broadcast');
         });
     });
 });

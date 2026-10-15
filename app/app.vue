@@ -21,6 +21,31 @@
         </nav>
 
         <div class="nav-actions">
+          <div class="notification-container">
+            <button class="btn btn-icon btn-glass" id="btn-notifications" @click="showNotifs = !showNotifs" title="Notifikasi">
+              <span class="bell-icon">🔔</span>
+              <span v-if="unreadCount > 0" class="notif-badge">{{ unreadCount }}</span>
+            </button>
+
+            <!-- Notifications Dropdown -->
+            <div v-if="showNotifs" class="notif-dropdown glass-card animate-fade-in">
+              <div class="notif-header">
+                <span class="notif-title">Notifikasi Terkini</span>
+                <button v-if="unreadCount > 0" @click="markAllAsRead" class="btn-link-sm">Tandai sudah dibaca</button>
+              </div>
+              <div class="notif-list">
+                <div v-for="notif in notifications" :key="notif.id" class="notif-item" :class="{ 'unread': !notif.is_read }">
+                  <div class="notif-type-icon">{{ notif.type === 'payment' ? '💳' : notif.type === 'booking' ? '🏨' : '🎉' }}</div>
+                  <div class="notif-content">
+                    <div class="notif-item-title">{{ notif.title }}</div>
+                    <div class="notif-item-msg">{{ notif.message }}</div>
+                    <div class="notif-item-time">{{ notif.time }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <button class="btn btn-glass" id="btn-login">Masuk</button>
           <button class="btn btn-primary" id="btn-register">Daftar Akun</button>
         </div>
@@ -331,6 +356,41 @@ const sampleFlights = ref([
     price: 1120000
   }
 ])
+
+// Notification state
+const showNotifs = ref(false)
+const notifications = ref([
+  {
+    id: 1,
+    title: 'Pembayaran Berhasil Dikonfirmasi',
+    message: 'Pembayaran untuk pemesanan BK-HTL-849102 sebesar Rp 2.500.000 telah lunas. E-voucher hotel telah terbit.',
+    type: 'payment',
+    time: '5 menit lalu',
+    is_read: false
+  },
+  {
+    id: 2,
+    title: 'Pemesanan Hotel Berhasil',
+    message: 'Reservasi hotel Grand Melia Resort berhasil dibuat. Selesaikan pembayaran sebelum batas waktu.',
+    type: 'booking',
+    time: '1 jam lalu',
+    is_read: false
+  },
+  {
+    id: 3,
+    title: 'Promo Spesial Liburan 10.10',
+    message: 'Gunakan kode promo VACATION10 untuk mendapatkan potongan instan 10% hingga Rp 500.000!',
+    type: 'promo',
+    time: '1 hari lalu',
+    is_read: true
+  }
+])
+
+const unreadCount = computed(() => notifications.value.filter(n => !n.is_read).length)
+
+const markAllAsRead = () => {
+  notifications.value.forEach(n => { n.is_read = true })
+}
 </script>
 
 <style scoped>
@@ -353,6 +413,131 @@ const sampleFlights = ref([
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
+  position: relative;
+}
+
+.notification-container {
+  position: relative;
+}
+
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-size: 1.15rem;
+}
+
+.notif-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--accent-gradient, linear-gradient(135deg, #f43f5e, #e11d48));
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  box-shadow: 0 2px 6px rgba(244, 63, 94, 0.4);
+}
+
+.notif-dropdown {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  right: 0;
+  width: 340px;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md, 12px);
+  padding: 1rem;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  z-index: 200;
+}
+
+.notif-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.notif-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.btn-link-sm {
+  background: none;
+  border: none;
+  color: var(--primary, #3b82f6);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-link-sm:hover {
+  text-decoration: underline;
+}
+
+.notif-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 0.75rem;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.notif-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.65rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.2s ease;
+}
+
+.notif-item.unread {
+  background: rgba(59, 130, 246, 0.1);
+  border-left: 3px solid #3b82f6;
+}
+
+.notif-type-icon {
+  font-size: 1.25rem;
+}
+
+.notif-content {
+  flex: 1;
+}
+
+.notif-item-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.notif-item-msg {
+  font-size: 0.75rem;
+  color: var(--text-muted, #94a3b8);
+  margin-top: 0.2rem;
+  line-height: 1.35;
+}
+
+.notif-item-time {
+  font-size: 0.68rem;
+  color: var(--text-dim, #64748b);
+  margin-top: 0.35rem;
 }
 
 .brand-group {

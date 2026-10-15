@@ -14,6 +14,10 @@ use Illuminate\Support\Str;
 
 class BookingService
 {
+    public function __construct(
+        protected NotificationService $notificationService = new NotificationService()
+    ) {}
+
     /**
      * Create a new hotel booking with concurrency lock and room decrement.
      */
@@ -74,6 +78,14 @@ class BookingService
                 ]);
             }
 
+            // Create notification
+            $this->notificationService->send(
+                $user,
+                'Pemesanan Hotel Berhasil',
+                "Pemesanan hotel {$booking->booking_code} berhasil dibuat. Silakan selesaikan pembayaran sebelum batas waktu.",
+                'booking'
+            );
+
             return $booking->load([
                 'hotelBooking.room.hotel.destination',
                 'passengers',
@@ -132,6 +144,14 @@ class BookingService
                 ]);
             }
 
+            // Create notification
+            $this->notificationService->send(
+                $user,
+                'Pemesanan Tiket Pesawat Berhasil',
+                "Pemesanan tiket pesawat {$booking->booking_code} berhasil dibuat. Silakan selesaikan pembayaran sebelum batas waktu.",
+                'booking'
+            );
+
             return $booking->load([
                 'flightBooking.flight.airline',
                 'flightBooking.flight.departureAirport',
@@ -182,6 +202,14 @@ class BookingService
             }
 
             $booking->update(['status' => 'cancelled']);
+
+            // Create notification
+            $this->notificationService->send(
+                $user,
+                'Pemesanan Dibatalkan',
+                "Pemesanan {$booking->booking_code} telah berhasil dibatalkan.",
+                'cancellation'
+            );
 
             return $booking->fresh([
                 'hotelBooking.room.hotel',

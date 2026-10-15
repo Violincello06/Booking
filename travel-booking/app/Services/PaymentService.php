@@ -12,6 +12,10 @@ use Illuminate\Support\Str;
 
 class PaymentService
 {
+    public function __construct(
+        protected NotificationService $notificationService = new NotificationService()
+    ) {}
+
     /**
      * Checkout & initialize payment for a booking.
      */
@@ -78,6 +82,14 @@ class PaymentService
                 $payment->booking->update([
                     'status' => 'confirmed',
                 ]);
+
+                // Create notification
+                $this->notificationService->send(
+                    $user,
+                    'Pembayaran Berhasil Dikonfirmasi',
+                    "Pembayaran untuk pemesanan {$payment->booking->booking_code} sebesar Rp " . number_format((float) $payment->amount, 0, ',', '.') . ' telah berhasil diverifikasi.',
+                    'payment'
+                );
             } else {
                 $payment->update([
                     'status' => 'failed',
