@@ -15,10 +15,12 @@ use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\VoucherController;
 use App\Http\Controllers\Api\Admin\AirlineController as AdminAirlineController;
 use App\Http\Controllers\Api\Admin\AirportController as AdminAirportController;
+use App\Http\Controllers\Api\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Api\Admin\DestinationController as AdminDestinationController;
 use App\Http\Controllers\Api\Admin\FlightController as AdminFlightController;
 use App\Http\Controllers\Api\Admin\HotelController as AdminHotelController;
 use App\Http\Controllers\Api\Admin\NotificationController as AdminNotificationController;
+use App\Http\Controllers\Api\Admin\ReportController as AdminReportController;
 use App\Http\Controllers\Api\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Api\Admin\RoomController as AdminRoomController;
 use App\Http\Controllers\Api\Admin\UserController as AdminUserController;
@@ -138,16 +140,14 @@ Route::prefix('v1')->group(function () {
         // Admin Master CRUD Endpoints
         // -----------------------------------------------------------------
         Route::middleware('role:admin')->prefix('admin')->group(function () {
-            Route::get('/dashboard', function (Request $request) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Akses admin berhasil diverifikasi',
-                    'data' => [
-                        'user' => $request->user()->name,
-                        'role' => $request->user()->role,
-                    ],
-                ]);
-            })->name('api.v1.admin.dashboard');
+            // Dashboard KPIs & Analytics
+            Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('api.v1.admin.dashboard');
+            Route::get('/dashboard/charts', [AdminDashboardController::class, 'charts'])->name('api.v1.admin.dashboard.charts');
+            Route::get('/dashboard/top-performers', [AdminDashboardController::class, 'topPerformers'])->name('api.v1.admin.dashboard.top-performers');
+
+            // Reports & Analytics
+            Route::get('/reports/bookings', [AdminReportController::class, 'bookings'])->name('api.v1.admin.reports.bookings');
+            Route::get('/reports/revenue', [AdminReportController::class, 'revenue'])->name('api.v1.admin.reports.revenue');
 
             // Master CRUD resources
             Route::apiResource('destinations', AdminDestinationController::class);

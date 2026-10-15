@@ -220,6 +220,57 @@ class BookingService
     }
 
     /**
+     * Cancel all expired pending bookings and release inventory back to availability.
+     */
+    public function cancelExpiredBookings(): int
+    {
+        $expiredBookings = Booking::where('status', 'pending')
+            ->where('expired_at', '<', now())
+            ->with(['hotelBooking', 'flightBooking', 'user'])
+            ->get();
+
+        $cancelledCount = 0;
+
+        foreach ($expiredBookings as $booking) {
+            DB::transaction(function () use ($booking, &$cancelledCount) {
+                // Restore hotel inventory
+                if ($booking->booking_type === 'hotel' && $booking->hotelBooking) {
+                    $room = Room::where('id', $booking->hotelBooking->room_id)->lockForUpdate()->first();
+                    if ($room) {
+                        $room->increment('available_rooms', $booking->hotelBooking->room_count);
+                        if ($room->status === 'unavailable') {
+                            $room->update(['status' => 'available']);
+                        }
+                    }
+                }
+
+                // Restore flight inventory
+                if ($booking->booking_type === 'flight' && $booking->flightBooking) {
+                    $flight = Flight::where('id', $booking->flightBooking->flight_id)->lockForUpdate()->first();
+                    if ($flight) {
+                        $flight->increment('available_seats', $booking->flightBooking->passenger_count);
+                    }
+                }
+
+                $booking->update(['status' => 'cancelled']);
+
+                if ($booking->user) {
+                    $this->notificationService->send(
+                        $booking->user,
+                        'Pemesanan Kedaluwarsa Dibatalkan',
+                        "Pemesanan {$booking->booking_code} telah dibatalkan otomatis karena melewati batas waktu pembayaran.",
+                        'cancellation'
+                    );
+                }
+
+                $cancelledCount++;
+            });
+        }
+
+        return $cancelledCount;
+    }
+
+    /**
      * Get paginated bookings for a specific user.
      */
     public function getUserBookings(User $user, array $filters = [], int $perPage = 10): LengthAwarePaginator
