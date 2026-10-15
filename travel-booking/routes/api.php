@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\HotelController;
+use App\Http\Controllers\Api\VoucherController;
 use App\Http\Controllers\Api\Admin\AirlineController as AdminAirlineController;
 use App\Http\Controllers\Api\Admin\AirportController as AdminAirportController;
 use App\Http\Controllers\Api\Admin\DestinationController as AdminDestinationController;
@@ -56,6 +57,9 @@ Route::prefix('v1')->group(function () {
     Route::get('/search/hotels', [SearchController::class, 'hotels'])->name('api.v1.search.hotels');
     Route::get('/search/flights', [SearchController::class, 'flights'])->name('api.v1.search.flights');
 
+    // Public Vouchers Catalog
+    Route::get('/vouchers', [VoucherController::class, 'index'])->name('api.v1.vouchers.index');
+
     // Authentication (Rate limited to prevent brute-force attacks)
     Route::middleware('throttle:10,1')->group(function () {
         Route::post('/register', [AuthController::class, 'register'])->name('api.v1.auth.register');
@@ -86,6 +90,12 @@ Route::prefix('v1')->group(function () {
         Route::post('/payments/{code}/simulate', [PaymentController::class, 'simulate'])->name('api.v1.payments.simulate');
         Route::get('/payments/{code}/status', [PaymentController::class, 'status'])->name('api.v1.payments.status');
         Route::get('/bookings/{code}/confirmation', [PaymentController::class, 'confirmation'])->name('api.v1.bookings.confirmation');
+
+        // -----------------------------------------------------------------
+        // Voucher Promo & Discounts
+        // -----------------------------------------------------------------
+        Route::post('/vouchers/apply', [VoucherController::class, 'apply'])->name('api.v1.vouchers.apply');
+        Route::get('/vouchers/usages', [VoucherController::class, 'usages'])->name('api.v1.vouchers.usages');
 
         // -----------------------------------------------------------------
         // Role Protected Endpoints (Staff & Admin)
