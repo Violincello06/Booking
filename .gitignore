@@ -1,0 +1,32 @@
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+
+# Node & PHP dependencies
+node_modules
+vendor
+travel-booking/vendor
+travel-booking/node_modules
+
+# Logs & Cache
+logs
+*.log
+.phpunit.result.cache
+
+# Misc
+.DS_Store
+.fleet
+.idea
+.vscode
+
+# Local env files
+.env
+.env.*
+!.env.example
+travel-booking/.env
+travel-booking/.env.*
+!travel-booking/.env.example
