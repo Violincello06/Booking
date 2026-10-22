@@ -1,0 +1,208 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Administrator OTA",
+      "email": "admin@violincello.com",
+      "password": "admin123",
+      "role": "admin",
+      "phone": "+6281234567890"
+    },
+    {
+      "id": 2,
+      "name": "Pelanggan Wisata",
+      "email": "user@violincello.com",
+      "password": "user123",
+      "role": "user",
+      "phone": "+6289876543210"
+    }
+  ],
+  "destinations": [
+    {
+      "id": 5,
+      "name": "Kawah Colomadu",
+      "city": "Colomadu",
+      "country": "Indonesia",
+      "image": "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80",
+      "description": "Panas",
+      "rating": 4.8,
+      "badge": "Wisata Unggulan"
+    },
+    {
+      "id": 1,
+      "name": "Pulau Dewata Bali",
+      "city": "Denpasar & Badung",
+      "country": "Indonesia",
+      "image": "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80",
+      "description": "Kombinasi pantai tropis, pura bernilai sejarah tinggi, dan pusat seni budaya Nusantara.",
+      "rating": 4.9,
+      "badge": "Favorit Wisatawan"
+    },
+    {
+      "id": 2,
+      "name": "Labuan Bajo & Pulau Padar",
+      "city": "Manggarai Barat, NTT",
+      "country": "Indonesia",
+      "image": "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=800&q=80",
+      "description": "Pintu masuk menuju keajaiban alam purba Komodo dan gugusan pulau karang eksotis.",
+      "rating": 4.95,
+      "badge": "Ekowisata Prioritas"
+    },
+    {
+      "id": 3,
+      "name": "Candi Borobudur & Sekitarnya",
+      "city": "Magelang & Yogyakarta",
+      "country": "Indonesia",
+      "image": "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?auto=format&fit=crop&w=800&q=80",
+      "description": "Mahakarya candi Buddha terbesar di dunia yang dikelilingi perbukitan Menoreh.",
+      "rating": 4.88,
+      "badge": "Warisan Dunia UNESCO"
+    },
+    {
+      "id": 4,
+      "name": "Danau Toba & Pulau Samosir",
+      "city": "Sumatera Utara",
+      "country": "Indonesia",
+      "image": "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80",
+      "description": "Danau vulkanik kaldera terbesar di dunia dengan kekayaan tradisi Batak yang otentik.",
+      "rating": 4.82,
+      "badge": "Geopark Global"
+    }
+  ],
+  "hotels": [
+    {
+      "id": 1,
+      "name": "Amnaya Resort Kuta",
+      "city": "Kuta, Bali",
+      "stars": 5,
+      "rating": 4.9,
+      "price": 1850000,
+      "availableRooms": 14,
+      "tag": "Resor Pantai",
+      "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80",
+      "amenities": [
+        "Kolam Renang Privat",
+        "Pemandangan Samudra",
+        "Sarapan Termasuk",
+        "Akses WiFi Cepat",
+        "Layanan Spa"
+      ],
+      "description": "Penginapan bintang lima bernuansa tropis dengan privasi tenang di dekat pantai Kuta."
+    },
+    {
+      "id": 2,
+      "name": "The Phoenix Heritage Hotel",
+      "city": "Yogyakarta",
+      "stars": 5,
+      "rating": 4.8,
+      "price": 1250000,
+      "availableRooms": 9,
+      "tag": "Arsitektur Klasik",
+      "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80",
+      "amenities": [
+        "Nuansa Kolonial",
+        "Pusat Kebugaran",
+        "Restoran Fine Dining",
+        "Area Kolam Renang"
+      ],
+      "description": "Hotel legendaris dengan perpaduan arsitektur Eropa dan seni khas Jawa di pusat kota."
+    },
+    {
+      "id": 3,
+      "name": "Ayana Komodo Waecicu Beach",
+      "city": "Labuan Bajo, NTT",
+      "stars": 5,
+      "rating": 4.95,
+      "price": 3200000,
+      "availableRooms": 7,
+      "tag": "Resor Premium",
+      "image": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80",
+      "amenities": [
+        "Dermaga Pribadi",
+        "Tur Kapal Phinisi",
+        "Rooftop Lounge",
+        "Pusat Menyelam"
+      ],
+      "description": "Resor tepi laut dengan dermaga pribadi dan pemandangan matahari terbenam terbaik di Flores."
+    },
+    {
+      "id": 4,
+      "name": "Toba Heritage Resort",
+      "city": "Parapat, Danau Toba",
+      "stars": 4,
+      "rating": 4.75,
+      "price": 950000,
+      "availableRooms": 12,
+      "tag": "Panorama Danau",
+      "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80",
+      "amenities": [
+        "Pemandangan Danau Langsung",
+        "Restoran Masakan Lokal",
+        "Penyewaan Perahu Wisata"
+      ],
+      "description": "Akomodasi tenang di tepi Danau Toba dengan pemandangan pegunungan dan pulau Samosir."
+    }
+  ],
+  "flights": [
+    {
+      "id": 1,
+      "airline": "Garuda Indonesia",
+      "flightNumber": "GA-404",
+      "originCode": "CGK",
+      "originCity": "Jakarta",
+      "destCode": "DPS",
+      "destCity": "Bali",
+      "depTime": "08:30",
+      "arrTime": "11:20",
+      "duration": "1j 50m",
+      "price": 1450000,
+      "seats": 28,
+      "class": "Ekonomi Flexi"
+    },
+    {
+      "id": 2,
+      "airline": "Batik Air",
+      "flightNumber": "ID-6512",
+      "originCode": "CGK",
+      "originCity": "Jakarta",
+      "destCode": "DPS",
+      "destCity": "Bali",
+      "depTime": "13:15",
+      "arrTime": "16:05",
+      "duration": "1j 50m",
+      "price": 1120000,
+      "seats": 35,
+      "class": "Ekonomi Standar"
+    },
+    {
+      "id": 3,
+      "airline": "Citilink",
+      "flightNumber": "QG-680",
+      "originCode": "SUB",
+      "originCity": "Surabaya",
+      "destCode": "LBJ",
+      "destCity": "Labuan Bajo",
+      "depTime": "07:45",
+      "arrTime": "10:15",
+      "duration": "1j 30m",
+      "price": 1280000,
+      "seats": 22,
+      "class": "Ekonomi Hemat"
+    },
+    {
+      "id": 4,
+      "airline": "Garuda Indonesia",
+      "flightNumber": "GA-712",
+      "originCode": "CGK",
+      "originCity": "Jakarta",
+      "destCode": "DTB",
+      "destCity": "Silangit (Danau Toba)",
+      "depTime": "09:15",
+      "arrTime": "11:25",
+      "duration": "2j 10m",
+      "price": 1380000,
+      "seats": 18,
+      "class": "Ekonomi Terjadwal"
+    }
+  ]
+}

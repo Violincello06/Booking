@@ -731,6 +731,258 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "10. Admin CRUD (Destinasi, Hotel, Pesawat)",
+			"item": [
+				{
+					"name": "0. Dapatkan Token Siap Pakai",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/tokens",
+							"host": ["{{base_url}}"],
+							"path": ["tokens"]
+						},
+						"description": "Menampilkan Bearer Token Admin & User yang aktif serta Master Key untuk testing Postman."
+					}
+				},
+				{
+					"name": "Destinasi - 1. List Destinasi (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+						},
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/admin/destinations",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "destinations"]
+						}
+					}
+				},
+				{
+					"name": "Destinasi - 2. Tambah Destinasi (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+						},
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Danau Toba Heritage\",\n    \"city\": \"Samosir\",\n    \"country\": \"Indonesia\",\n    \"image\": \"https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80\",\n    \"description\": \"Danau vulkanik terbesar di Asia Tenggara dengan keindahan pulau Samosir di tengahnya.\",\n    \"rating\": 4.9,\n    \"badge\": \"Keajaiban Dunia\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/destinations",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "destinations"]
+						}
+					}
+				},
+				{
+					"name": "Destinasi - 3. Update Destinasi (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+						},
+						"method": "PUT",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Danau Toba & Pulau Samosir Resort\",\n    \"rating\": 5.0,\n    \"badge\": \"Pilihan Populer\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/destinations/1",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "destinations", "1"]
+						}
+					}
+				},
+				{
+					"name": "Destinasi - 4. Delete Destinasi (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+						},
+						"method": "DELETE",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/admin/destinations/5",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "destinations", "5"]
+						}
+					}
+				},
+				{
+					"name": "Hotel - 1. List Hotel (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+						},
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/admin/hotels",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "hotels"]
+						}
+					}
+				},
+				{
+					"name": "Hotel - 2. Tambah Hotel (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+						},
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"The Ritz-Carlton Bali\",\n    \"city\": \"Nusa Dua, Bali\",\n    \"stars\": 5,\n    \"price\": 3850000,\n    \"availableRooms\": 8,\n    \"tag\": \"Ultra Luxury\",\n    \"image\": \"https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80\",\n    \"amenities\": [\"Private Beach\", \"Infinity Pool\", \"Spa Wellness\", \"Fine Dining\"],\n    \"description\": \"Resor bintang lima mewah di tebing karang Nusa Dua dengan pemandangan langsung ke Samudra Hindia.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/hotels",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "hotels"]
+						}
+					}
+				},
+				{
+					"name": "Hotel - 3. Update Hotel (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+						},
+						"method": "PUT",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"price\": 3500000,\n    \"availableRooms\": 12,\n    \"tag\": \"Promo Eksklusif\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/hotels/1",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "hotels", "1"]
+						}
+					}
+				},
+				{
+					"name": "Hotel - 4. Delete Hotel (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+						},
+						"method": "DELETE",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/admin/hotels/2",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "hotels", "2"]
+						}
+					}
+				},
+				{
+					"name": "Pesawat - 1. List Penerbangan (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+						},
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/admin/flights",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "flights"]
+						}
+					}
+				},
+				{
+					"name": "Pesawat - 2. Tambah Penerbangan (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+						},
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"airline\": \"Garuda Indonesia\",\n    \"flightNumber\": \"GA-410\",\n    \"originCode\": \"CGK\",\n    \"originCity\": \"Jakarta\",\n    \"destCode\": \"DPS\",\n    \"destCity\": \"Denpasar, Bali\",\n    \"depTime\": \"07:30\",\n    \"arrTime\": \"10:20\",\n    \"duration\": \"1j 50m\",\n    \"price\": 1850000,\n    \"seats\": 24,\n    \"class\": \"Business Class\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/flights",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "flights"]
+						}
+					}
+				},
+				{
+					"name": "Pesawat - 3. Update Penerbangan (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+						},
+						"method": "PUT",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"price\": 1650000,\n    \"seats\": 30\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/flights/1",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "flights", "1"]
+						}
+					}
+				},
+				{
+					"name": "Pesawat - 4. Delete Penerbangan (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+						},
+						"method": "DELETE",
+						"header": [{ "key": "Accept", "value": "application/json" }],
+						"url": {
+							"raw": "{{base_url}}/admin/flights/2",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "flights", "2"]
+						}
+					}
+				}
+			]
 		}
 	]
 }
