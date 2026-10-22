@@ -8,22 +8,30 @@ const PORT = process.env.PORT || 8000
 const DB_FILE = path.join(__dirname, 'data', 'db.json')
 
 app.use(cors())
-app.use(express.json())
+app.use(express.json({ limit: '50mb' }))
+app.use(express.urlencoded({ extended: true, limit: '50mb' }))
+
+// Setup Static Uploads Directory
+const UPLOADS_DIR = path.join(__dirname, 'public', 'uploads')
+if (!fs.existsSync(UPLOADS_DIR)) {
+  fs.mkdirSync(UPLOADS_DIR, { recursive: true })
+}
+app.use('/uploads', express.static(UPLOADS_DIR))
 
 // Serve Portal Manajemen Sistem Admin langsung di root http://localhost:8000/
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/admin-panel', express.static(path.join(__dirname, 'public')))
 
-
-
 // Database Helpers
 function readDB() {
   try {
     const raw = fs.readFileSync(DB_FILE, 'utf-8')
-    return JSON.parse(raw)
+    const parsed = JSON.parse(raw)
+    if (!parsed.blogs) parsed.blogs = []
+    return parsed
   } catch (err) {
     console.error('Error reading db.json:', err)
-    return { users: [], destinations: [], hotels: [], flights: [] }
+    return { users: [], destinations: [], hotels: [], flights: [], blogs: [] }
   }
 }
 
@@ -312,11 +320,85 @@ app.get(['/api/admin/dashboard', '/api/v1/admin/dashboard'], authMiddleware, adm
       totalDestinations: db.destinations.length,
       totalHotels: db.hotels.length,
       totalFlights: db.flights.length,
+      totalBlogs: (db.blogs || []).length,
       totalUsers: db.users.length,
       totalAvailableRooms: db.hotels.reduce((acc, h) => acc + (h.availableRooms || 0), 0),
       totalFlightSeats: db.flights.reduce((acc, f) => acc + (f.seats || 0), 0)
     }
   })
+})
+
+// --- API UPLOAD FOTO BLOG (Mendukung base64 / file upload) ---
+app.post(['/api/admin/upload', '/api/v1/admin/upload', '/api/upload', '/api/v1/upload'], (req, res) => {
+  const { image, filename } = req.body || {}
+  if (!image) {
+    return res.status(400).json({ success: false, message: 'Data foto (base64 image) wajib disertakan.' })
+  }
+
+  try {
+    const matches = String(image).match(/^data:([A-Za-z-+\/]+);base64,(.+)$/)
+    let fileBuffer
+    let ext = 'png'
+
+    if (matches && matches.length === 3) {
+      const mime = matches[1]
+      ext = mime.split('/')[1] || 'png'
+      if (ext === 'jpeg') ext = 'jpg'
+      fileBuffer = Buffer.from(matches[2], 'base64')
+    } else {
+      fileBuffer = Buffer.from(image, 'base64')
+    }
+
+    const safeName = `blog_${Date.now()}_${Math.floor(Math.random() * 1000)}.${ext}`
+    const targetPath = path.join(UPLOADS_DIR, safeName)
+    fs.writeFileSync(targetPath, fileBuffer)
+
+    const publicUrl = `http://localhost:8000/uploads/${safeName}`
+    res.json({
+      success: true,
+      message: 'Foto berhasil diunggah ke server.',
+      data: {
+        filename: safeName,
+        url: publicUrl
+      }
+    })
+  } catch (err) {
+    console.error('Error saving uploaded photo:', err)
+    res.status(500).json({ success: false, message: 'Gagal memproses unggahan foto.' })
+  }
+})
+
+// --- PUBLIC BLOG ROUTES (Untuk Landing Page) ---
+app.get(['/api/public/blogs', '/api/blogs', '/api/v1/blogs'], (req, res) => {
+  const db = readDB()
+  let list = db.blogs || []
+
+  if (req.query.q) {
+    const q = req.query.q.toLowerCase()
+    list = list.filter(b => 
+      (b.title || '').toLowerCase().includes(q) || 
+      (b.summary || '').toLowerCase().includes(q) ||
+      (b.content || '').toLowerCase().includes(q) ||
+      (b.category || '').toLowerCase().includes(q)
+    )
+  }
+
+  if (req.query.category) {
+    const cat = req.query.category.toLowerCase()
+    list = list.filter(b => (b.category || '').toLowerCase() === cat)
+  }
+
+  res.json({ success: true, total: list.length, data: list })
+})
+
+app.get(['/api/public/blogs/:id', '/api/blogs/:id', '/api/v1/blogs/:id'], (req, res) => {
+  const id = Number(req.params.id)
+  const db = readDB()
+  const blog = (db.blogs || []).find(b => b.id === id)
+  if (!blog) {
+    return res.status(404).json({ success: false, message: 'Artikel blog tidak ditemukan.' })
+  }
+  res.json({ success: true, data: blog })
 })
 
 // --- CRUD DESTINASI ---
@@ -521,6 +603,76 @@ app.delete(['/api/admin/flights/:id', '/api/v1/admin/flights/:id'], authMiddlewa
   res.json({ success: true, message: `Penerbangan "${removed.flightNumber}" telah dihapus.`, data: removed })
 })
 
+// --- CRUD BLOG & ARTIKEL (Admin Protected) ---
+app.get(['/api/admin/blogs', '/api/v1/admin/blogs'], authMiddleware, adminOnly, (req, res) => {
+  const db = readDB()
+  res.json({ success: true, data: db.blogs || [] })
+})
+
+app.post(['/api/admin/blogs', '/api/v1/admin/blogs'], authMiddleware, adminOnly, (req, res) => {
+  const { title, category, author, summary, content, image, readTime } = req.body || {}
+  if (!title || !content) {
+    return res.status(422).json({ success: false, message: 'Judul artikel dan konten artikel wajib diisi.' })
+  }
+
+  const db = readDB()
+  if (!db.blogs) db.blogs = []
+
+  const newId = db.blogs.length > 0 ? Math.max(...db.blogs.map(b => b.id)) + 1 : 1
+  const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+
+  const item = {
+    id: newId,
+    title: String(title).trim(),
+    slug: String(title).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+    category: category ? String(category).trim() : 'Panduan Wisata',
+    author: author ? String(author).trim() : 'Tim Redaksi Violincello',
+    date: today,
+    readTime: readTime ? String(readTime).trim() : '4 menit baca',
+    image: image ? String(image).trim() : 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
+    summary: summary ? String(summary).trim() : (content.substring(0, 150) + '...'),
+    content: String(content).trim(),
+    tags: [category || 'Wisata']
+  }
+
+  db.blogs.unshift(item)
+  writeDB(db)
+  res.json({ success: true, message: 'Artikel blog baru berhasil diterbitkan.', data: item })
+})
+
+app.put(['/api/admin/blogs/:id', '/api/v1/admin/blogs/:id'], authMiddleware, adminOnly, (req, res) => {
+  const id = Number(req.params.id)
+  const db = readDB()
+  if (!db.blogs) db.blogs = []
+
+  const idx = db.blogs.findIndex(b => b.id === id)
+  if (idx === -1) {
+    return res.status(404).json({ success: false, message: 'Artikel blog tidak ditemukan.' })
+  }
+
+  db.blogs[idx] = {
+    ...db.blogs[idx],
+    ...req.body,
+    id
+  }
+  writeDB(db)
+  res.json({ success: true, message: 'Artikel blog berhasil diperbarui.', data: db.blogs[idx] })
+})
+
+app.delete(['/api/admin/blogs/:id', '/api/v1/admin/blogs/:id'], authMiddleware, adminOnly, (req, res) => {
+  const id = Number(req.params.id)
+  const db = readDB()
+  if (!db.blogs) db.blogs = []
+
+  const idx = db.blogs.findIndex(b => b.id === id)
+  if (idx === -1) {
+    return res.status(404).json({ success: false, message: 'Artikel blog tidak ditemukan.' })
+  }
+
+  const removed = db.blogs.splice(idx, 1)[0]
+  writeDB(db)
+  res.json({ success: true, message: `Artikel "${removed.title}" telah dihapus.`, data: removed })
+})
 
 // Start Server
 app.listen(PORT, () => {

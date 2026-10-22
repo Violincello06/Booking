@@ -204,5 +204,46 @@
       "seats": 18,
       "class": "Ekonomi Terjadwal"
     }
+  ],
+  "blogs": [
+    {
+      "id": 1,
+      "title": "Panduan Lengkap Sailing Labuan Bajo & Menikmati Senja di Pulau Padar",
+      "slug": "panduan-sailing-labuan-bajo",
+      "category": "Panduan Wisata",
+      "author": "Sarah Dananjaya",
+      "date": "22 Okt 2026",
+      "readTime": "5 menit baca",
+      "image": "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=800&q=80",
+      "summary": "Eksplorasi keajaiban purba gugusan pulau karang di Flores Barat dengan persiapan matang, mulai dari pilihan kapal phinisi hingga tips mendaki bukit Padar.",
+      "content": "Berlayar di perairan Taman Nasional Komodo merupakan salah satu pengalaman wisata terbaik di dunia. Untuk mendapatkan pengalaman optimal, pilihlah trip Liveaboard (LOB) berdurasi minimal 3 hari 2 malam. Bawalah sepatu trekking yang nyaman karena bukit Pulau Padar memiliki lebih dari 800 anak tangga batu. Pastikan Anda tiba di puncak sebelum pukul 05:30 pagi untuk menyaksikan matahari terbit yang memantulkan semburat keemasan di tiga teluk berwarna unik: pasir putih, merah muda (pink beach), dan abu-abu vulkanik.",
+      "tags": ["Labuan Bajo", "Komodo", "Sailing", "Tips"]
+    },
+    {
+      "id": 2,
+      "title": "7 Destinasi Staycation & Resor Bernuansa Tenang di Ubud Bali",
+      "slug": "7-destinasi-staycation-ubud-bali",
+      "category": "Rekomendasi Hotel",
+      "author": "Kevin Wijaya",
+      "date": "18 Okt 2026",
+      "readTime": "4 menit baca",
+      "image": "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80",
+      "summary": "Menikmati kesejukan hutan tropis Lembah Ayung dan sawah terasering Tegalalang dengan pilihan akomodasi ramah lingkungan terbaik.",
+      "content": "Ubud selalu menjadi tempat pelarian sempurna dari hiruk pikuk perkotaan. Menginap di vila tepi jurang yang menghadap langsung ke Sungai Ayung memberikan ketenangan batin yang tiada tara. Beberapa resor pilihan di Ubud menawarkan fasilitas kelas dunia seperti kelas yoga privat saat fajar, sajian bahan pangan organik langsung dari kebun, dan infinity pool tersembunyi di tengah rimbunnya pepohonan bambu.",
+      "tags": ["Bali", "Ubud", "Resor Mewah", "Staycation"]
+    },
+    {
+      "id": 3,
+      "title": "Eksplorasi Budaya dan Kuliner Legendaris di Sekitar Candi Borobudur",
+      "slug": "kuliner-budaya-borobudur",
+      "category": "Kuliner & Budaya",
+      "author": "Dewi Lestari",
+      "date": "15 Okt 2026",
+      "readTime": "6 menit baca",
+      "image": "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?auto=format&fit=crop&w=800&q=80",
+      "summary": "Menelusuri desa-desa wisata di kawasan Magelang, menikmati kopi luwak khas perbukitan Menoreh, dan sarapan mangut beong yang gurih pedas.",
+      "content": "Mengunjungi Candi Borobudur tidak lengkap tanpa menjelajahi desa-desa wisata penyangganya seperti Candirejo dan Wanurejo. Anda dapat menyewa sepeda onthel atau mobil VW terbuka melintasi persawahan hijau. Singgahlah di warung lokal untuk menikmati Mangut Beong berkuah santan pedas gurih, lalu akhiri sore dengan secangkir kopi robusta hangat di balkon perbukitan Menoreh sambil menikmati panorama Candi Borobudur dari kejauhan.",
+      "tags": ["Borobudur", "Magelang", "Kuliner Tradisional", "Budaya"]
+    }
   ]
 }
