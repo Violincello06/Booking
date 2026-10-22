@@ -18,6 +18,7 @@
           <a href="#destinations" class="nav-link">Destinasi</a>
           <a href="#hotels" class="nav-link">Hotel & Resor</a>
           <a href="#flights" class="nav-link">Penerbangan</a>
+          <a href="#blogs" class="nav-link">Inspirasi & Blog</a>
           <a href="#komitmen" class="nav-link">Keunggulan</a>
         </nav>
 
@@ -333,6 +334,56 @@
         </div>
       </section>
 
+      <!-- 6. BLOG & INSPIRASI PERJALANAN (Backend Data Real-Time) -->
+      <section class="catalog-section" id="blogs">
+        <div class="section-header">
+          <div>
+            <span class="badge badge-primary">Inspirasi Nusantara</span>
+            <h2 class="section-title">Blog & Panduan Wisata</h2>
+          </div>
+          <span style="color: var(--text-dim); font-size: 0.9rem;">
+            {{ blogs.length }} artikel terbit
+          </span>
+        </div>
+
+        <div v-if="loadingBlogs" class="text-center" style="padding: 3rem;">
+          <p style="color: var(--text-muted);">Memuat artikel blog...</p>
+        </div>
+
+        <div v-else-if="blogs.length === 0" class="glass-panel text-center" style="padding: 3rem;">
+          <p style="color: var(--text-muted);">Belum ada artikel blog yang diterbitkan oleh admin.</p>
+        </div>
+
+        <div v-else class="cards-grid">
+          <article v-for="blog in blogs" :key="blog.id" class="glass-card hotel-card blog-card">
+            <div class="hotel-media">
+              <img :src="blog.image" :alt="blog.title" class="hotel-img" loading="lazy" />
+              <div class="hotel-badge-floating">
+                <span class="badge badge-warning">{{ blog.category || 'Panduan Wisata' }}</span>
+              </div>
+            </div>
+            <div class="hotel-content">
+              <div class="blog-meta">
+                <span>🗓️ {{ blog.date }}</span>
+                <span>⏱️ {{ blog.readTime || '4 menit' }}</span>
+                <span>✍️ {{ blog.author }}</span>
+              </div>
+
+              <h3 class="hotel-title blog-title">{{ blog.title }}</h3>
+              <p class="blog-summary">
+                {{ blog.summary || blog.content }}
+              </p>
+
+              <div class="hotel-footer">
+                <button class="btn btn-glass" :id="'btn-read-blog-' + blog.id" @click="openBlogDetail(blog)">
+                  Baca Selengkapnya ➔
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <!-- 6. KOMITMEN LAYANAN (Otentik & Anti-Slop) -->
       <section class="catalog-section" id="komitmen" style="border-top: 1px solid var(--border-glass); padding-top: 4rem;">
         <div class="section-header text-center" style="display: block; margin-bottom: 2.5rem;">
@@ -413,6 +464,32 @@
       </div>
     </div>
 
+    <!-- 8. BLOG DETAIL READER MODAL -->
+    <div v-if="showBlogModal && selectedBlog" class="modal-overlay" @click.self="showBlogModal = false">
+      <div class="modal-content blog-reader-modal animate-fade-in">
+        <div style="position: relative;">
+          <img :src="selectedBlog.image" :alt="selectedBlog.title" class="blog-reader-img" />
+          <button class="btn-close" style="position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.6);" @click="showBlogModal = false">✕</button>
+        </div>
+        <div class="modal-header" style="margin-bottom: 0.5rem; display: block;">
+          <span class="badge badge-primary" style="margin-bottom: 0.4rem; display: inline-block;">{{ selectedBlog.category }}</span>
+          <h3 class="modal-title" style="font-size: 1.4rem; line-height: 1.35; color: #fff;">{{ selectedBlog.title }}</h3>
+          <div class="blog-meta" style="margin-top: 0.5rem;">
+            <span>🗓️ {{ selectedBlog.date }}</span>
+            <span>⏱️ {{ selectedBlog.readTime }}</span>
+            <span>✍️ {{ selectedBlog.author }}</span>
+          </div>
+        </div>
+        <div class="blog-reader-body">
+          {{ selectedBlog.content }}
+        </div>
+        <div class="modal-footer" style="margin-top: 1.75rem; justify-content: space-between;">
+          <button class="btn btn-glass" @click="showBlogModal = false">Tutup Bacaan</button>
+          <a href="#destinations" class="btn btn-primary" @click="showBlogModal = false">Jelajahi Destinasi</a>
+        </div>
+      </div>
+    </div>
+
     <!-- Toast Notification -->
     <div class="toast-container">
       <div 
@@ -457,10 +534,21 @@ const searchTab = ref('hotel')
 const destinations = ref([])
 const hotels = ref([])
 const flights = ref([])
+const blogs = ref([])
 
 const loadingDestinations = ref(false)
 const loadingHotels = ref(false)
 const loadingFlights = ref(false)
+const loadingBlogs = ref(false)
+
+// Blog Reading Modal
+const showBlogModal = ref(false)
+const selectedBlog = ref(null)
+
+function openBlogDetail(blog) {
+  selectedBlog.value = blog
+  showBlogModal.value = true
+}
 
 // Filters
 const hotelFilterQuery = ref('')
@@ -568,10 +656,23 @@ async function fetchFlights() {
   }
 }
 
+async function fetchBlogs() {
+  loadingBlogs.value = true
+  try {
+    const res = await $fetch('http://localhost:8000/api/v1/blogs').catch(() => $fetch('/api/v1/blogs'))
+    blogs.value = res.data || []
+  } catch (err) {
+    console.error('Fetch blogs error:', err)
+  } finally {
+    loadingBlogs.value = false
+  }
+}
+
 function refreshAllData() {
   fetchDestinations()
   fetchHotels()
   fetchFlights()
+  fetchBlogs()
 }
 
 onMounted(() => {
@@ -852,6 +953,57 @@ onMounted(() => {
   border-right: none;
   border-bottom: none;
   padding: 2rem 0;
+}
+
+/* Blog Styles */
+.blog-card {
+  display: flex;
+  flex-direction: column;
+}
+.blog-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  font-size: 0.76rem;
+  color: var(--text-dim);
+  margin-bottom: 0.5rem;
+}
+.blog-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+.blog-summary {
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.blog-reader-modal {
+  max-width: 680px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 1.75rem;
+}
+.blog-reader-img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.25rem;
+}
+.blog-reader-body {
+  font-size: 0.95rem;
+  line-height: 1.85;
+  color: #e2e8f0;
+  white-space: pre-line;
+  margin: 1.25rem 0;
 }
 
 @media (max-width: 900px) {
