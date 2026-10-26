@@ -347,86 +347,164 @@ class OtaDataController extends Controller
         return response()->json(['success' => true, 'data' => $db['blogs'] ?? []]);
     }
 
-    public function storeBlog(Request $request)
+    private function saveBase64Image(string $image): string
     {
-        $title = trim((string) $request->input('title', ''));
-        if (!$title) {
-            return response()->json(['success' => false, 'message' => 'Judul artikel wajib diisi.'], 422);
+        if (empty($image) || !str_starts_with($image, 'data:image/')) {
+            return $image;
         }
 
-        $db = $this->readDB();
-        $blogs = $db['blogs'] ?? [];
-        $ids = array_column($blogs, 'id');
-        $newId = count($ids) > 0 ? max($ids) + 1 : 1;
+        try {
+            $uploadsDir = public_path('uploads');
+            if (!File::isDirectory($uploadsDir)) {
+                File::makeDirectory($uploadsDir, 0755, true, true);
+            }
 
-        $item = [
-            'id' => $newId,
-            'title' => $title,
-            'summary' => (string) $request->input('summary', ''),
-            'content' => (string) $request->input('content', ''),
-            'category' => (string) $request->input('category', 'Panduan Wisata'),
-            'author' => (string) $request->input('author', 'Tim Redaksi'),
-            'readTime' => (string) $request->input('readTime', '4 menit baca'),
-            'date' => (string) $request->input('date', date('d M Y')),
-            'image' => (string) $request->input('image', 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80')
-        ];
+            if (preg_match('/^data:([A-Za-z-+\/]+);base64,(.+)$/', $image, $matches)) {
+                $mime = $matches[1];
+                $ext = explode('/', $mime)[1] ?? 'png';
+                if ($ext === 'jpeg') $ext = 'jpg';
+                $buffer = base64_decode($matches[2]);
+            } else {
+                $buffer = base64_decode($image);
+                $ext = 'jpg';
+            }
 
-        array_unshift($blogs, $item);
-        $db['blogs'] = $blogs;
-        $this->writeDB($db);
+            $safeName = 'blog_' . time() . '_' . rand(100, 999) . '.' . $ext;
+            File::put($uploadsDir . DIRECTORY_SEPARATOR . $safeName, $buffer);
+            return url('uploads/' . $safeName);
+        } catch (\Throwable $e) {
+            return $image;
+        }
+    }
 
-        return response()->json(['success' => true, 'message' => 'Artikel blog berhasil disimpan.', 'data' => $item]);
+    public function storeBlog(Request $request)
+    {
+        try {
+            $title = trim((string) $request->input('title', ''));
+            if (!$title) {
+                return response()->json(['success' => false, 'message' => 'Judul artikel wajib diisi.'], 422);
+            }
+
+            $content = trim((string) $request->input('content', ''));
+            if (!$content) {
+                return response()->json(['success' => false, 'message' => 'Konten artikel wajib diisi.'], 422);
+            }
+
+            $db = $this->readDB();
+            $blogs = $db['blogs'] ?? [];
+            $ids = array_column($blogs, 'id');
+            $newId = count($ids) > 0 ? max($ids) + 1 : 1;
+
+            $image = (string) $request->input('image', '');
+            if ($image) {
+                $image = $this->saveBase64Image($image);
+            } else {
+                $image = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80';
+            }
+
+            $item = [
+                'id' => $newId,
+                'title' => $title,
+                'summary' => (string) $request->input('summary', ''),
+                'content' => $content,
+                'category' => (string) $request->input('category', 'Panduan Wisata'),
+                'author' => (string) $request->input('author', 'Tim Redaksi CelloTrav'),
+                'readTime' => (string) $request->input('readTime', '4 menit baca'),
+                'date' => (string) $request->input('date', date('d M Y')),
+                'image' => $image
+            ];
+
+            array_unshift($blogs, $item);
+            $db['blogs'] = $blogs;
+            $this->writeDB($db);
+
+            return response()->json(['success' => true, 'message' => 'Artikel blog berhasil disimpan.', 'data' => $item]);
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal menyimpan artikel blog: ' . $e->getMessage()], 500);
+        }
     }
 
     public function updateBlog(Request $request, $id)
     {
-        $id = (int) $id;
-        $db = $this->readDB();
-        $blogs = $db['blogs'] ?? [];
+        try {
+            $id = (int) $id;
+            $db = $this->readDB();
+            $blogs = $db['blogs'] ?? [];
 
-        $idx = -1;
-        foreach ($blogs as $i => $b) {
-            if ((int) $b['id'] === $id) {
-                $idx = $i;
-                break;
+            $idx = -1;
+            foreach ($blogs as $i => $b) {
+                if ((int) $b['id'] === $id) {
+                    $idx = $i;
+                    break;
+                }
             }
+
+            if ($idx === -1) {
+                return response()->json(['success' => false, 'message' => 'Artikel blog tidak ditemukan.'], 404);
+            }
+
+            $payload = $request->all();
+            if (isset($payload['image']) && is_string($payload['image'])) {
+                $payload['image'] = $this->saveBase64Image($payload['image']);
+            }
+
+            $blogs[$idx] = array_merge($blogs[$idx], $payload, ['id' => $id]);
+            $db['blogs'] = $blogs;
+            $this->writeDB($db);
+
+            return response()->json(['success' => true, 'message' => 'Artikel blog berhasil diperbarui.', 'data' => $blogs[$idx]]);
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal memperbarui artikel blog: ' . $e->getMessage()], 500);
         }
-
-        if ($idx === -1) {
-            return response()->json(['success' => false, 'message' => 'Artikel blog tidak ditemukan.'], 404);
-        }
-
-        $blogs[$idx] = array_merge($blogs[$idx], $request->all(), ['id' => $id]);
-        $db['blogs'] = $blogs;
-        $this->writeDB($db);
-
-        return response()->json(['success' => true, 'message' => 'Artikel blog berhasil diperbarui.', 'data' => $blogs[$idx]]);
     }
 
     public function deleteBlog($id)
     {
-        $id = (int) $id;
-        $db = $this->readDB();
-        $blogs = array_values(array_filter($db['blogs'] ?? [], fn($b) => (int) $b['id'] !== $id));
-        $db['blogs'] = $blogs;
-        $this->writeDB($db);
+        try {
+            $id = (int) $id;
+            $db = $this->readDB();
+            $blogs = array_values(array_filter($db['blogs'] ?? [], fn($b) => (int) $b['id'] !== $id));
+            $db['blogs'] = $blogs;
+            $this->writeDB($db);
 
-        return response()->json(['success' => true, 'message' => 'Artikel blog berhasil dihapus.']);
+            return response()->json(['success' => true, 'message' => 'Artikel blog berhasil dihapus.']);
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal menghapus artikel: ' . $e->getMessage()], 500);
+        }
     }
 
     public function upload(Request $request)
     {
-        $uploadsDir = public_path('uploads');
-        if (!File::isDirectory($uploadsDir)) {
-            File::makeDirectory($uploadsDir, 0755, true, true);
-        }
-
-        $image = (string) $request->input('image', '');
-        if (!$image) {
-            return response()->json(['success' => false, 'message' => 'Data foto (base64) wajib disertakan.'], 400);
-        }
-
         try {
+            $uploadsDir = public_path('uploads');
+            if (!File::isDirectory($uploadsDir)) {
+                File::makeDirectory($uploadsDir, 0755, true, true);
+            }
+
+            // Cek file multipart form data
+            if ($request->hasFile('file') || $request->hasFile('image')) {
+                $file = $request->file('file') ?? $request->file('image');
+                if ($file && $file->isValid()) {
+                    $ext = $file->getClientOriginalExtension() ?: 'jpg';
+                    $safeName = 'blog_' . time() . '_' . rand(100, 999) . '.' . $ext;
+                    $file->move($uploadsDir, $safeName);
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Foto berhasil diunggah ke server.',
+                        'data' => [
+                            'filename' => $safeName,
+                            'url' => url('uploads/' . $safeName)
+                        ]
+                    ]);
+                }
+            }
+
+            // Cek format base64
+            $image = (string) $request->input('image', '');
+            if (!$image) {
+                return response()->json(['success' => false, 'message' => 'Data foto (file atau base64) wajib disertakan.'], 400);
+            }
+
             $ext = 'png';
             if (preg_match('/^data:([A-Za-z-+\/]+);base64,(.+)$/', $image, $matches)) {
                 $mime = $matches[1];
@@ -435,18 +513,18 @@ class OtaDataController extends Controller
                 $fileBuffer = base64_decode($matches[2]);
             } else {
                 $fileBuffer = base64_decode($image);
+                $ext = 'jpg';
             }
 
             $safeName = 'blog_' . time() . '_' . rand(100, 999) . '.' . $ext;
             File::put($uploadsDir . DIRECTORY_SEPARATOR . $safeName, $fileBuffer);
 
-            $publicUrl = url('uploads/' . $safeName);
             return response()->json([
                 'success' => true,
                 'message' => 'Foto berhasil diunggah ke server.',
                 'data' => [
                     'filename' => $safeName,
-                    'url' => $publicUrl
+                    'url' => url('uploads/' . $safeName)
                 ]
             ]);
         } catch (\Throwable $e) {
