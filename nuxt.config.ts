@@ -5,11 +5,11 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   app: {
     head: {
-      title: 'Violincello Travel - Luxury Hotel & Flight Reservation',
+      title: 'CelloTrav - Platform Reservasi Hotel & Tiket Pesawat Nusantara',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Platform reservasi hotel dan penerbangan modern dengan pengalaman pemesanan yang cepat dan aman.' }
+        { name: 'description', content: 'CelloTrav: Platform reservasi hotel berbintang dan penerbangan nusantara dengan tarif transparan dan terpercaya.' }
       ]
     }
   }

@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portal Manajemen Sistem - Violincello OTA (Backend)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap"
+    rel="stylesheet">
   <style>
     :root {
       --bg: #090d16;
@@ -21,7 +24,12 @@
       --success: #10b981;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       background: #090d16;
@@ -31,8 +39,11 @@
       min-height: 100vh;
     }
 
-    .container { max-width: 1250px; margin: 0 auto; }
-    
+    .container {
+      max-width: 1250px;
+      margin: 0 auto;
+    }
+
     header {
       display: flex;
       justify-content: space-between;
@@ -49,6 +60,7 @@
       align-items: center;
       gap: 0.75rem;
     }
+
     .brand-icon {
       font-size: 1.5rem;
       background: rgba(37, 99, 235, 0.2);
@@ -60,11 +72,13 @@
       border-radius: 10px;
       border: 1px solid rgba(37, 99, 235, 0.4);
     }
+
     .brand-title {
       font-family: 'Outfit', sans-serif;
       font-size: 1.25rem;
       font-weight: 700;
     }
+
     .badge-admin {
       background: var(--gold);
       color: #000;
@@ -90,15 +104,53 @@
       text-decoration: none;
       font-family: inherit;
     }
-    .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.78rem; border-radius: 6px; }
-    .btn-primary { background: var(--primary); color: #fff; }
-    .btn-primary:hover { background: var(--primary-hover); }
-    .btn-outline { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--border); }
-    .btn-outline:hover { background: rgba(255,255,255,0.1); }
-    .btn-warning { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
-    .btn-warning:hover { background: var(--gold); color: #000; }
-    .btn-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
-    .btn-danger:hover { background: var(--danger); color: #fff; }
+
+    .btn-sm {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.78rem;
+      border-radius: 6px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-warning {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-warning:hover {
+      background: var(--gold);
+      color: #000;
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-danger:hover {
+      background: var(--danger);
+      color: #fff;
+    }
 
     /* KPI Summary */
     .kpi-row {
@@ -107,14 +159,151 @@
       gap: 1rem;
       margin-bottom: 1.75rem;
     }
+
     .kpi-box {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 1.25rem;
     }
-    .kpi-label { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; }
-    .kpi-num { font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 700; color: #fff; }
+
+    .kpi-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .kpi-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* Chart Section Styles (antislop compliant) */
+    .chart-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .chart-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .chart-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .chart-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .chart-controls {
+      display: flex;
+      gap: 0.4rem;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 0.3rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .chart-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .chart-tab-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .chart-tab-btn.active {
+      background: #2563eb;
+      color: #fff;
+    }
+
+    .chart-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.5rem;
+    }
+
+    .chart-svg {
+      min-width: 580px;
+      width: 100%;
+      height: 260px;
+      display: block;
+    }
+
+    .chart-bar-rect {
+      transition: y 0.3s ease, height 0.3s ease, fill 0.2s ease, opacity 0.2s ease;
+      cursor: pointer;
+    }
+
+    .chart-bar-rect:hover {
+      opacity: 0.85;
+    }
+
+    .chart-stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .chart-stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .chart-stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .chart-stat-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+    }
 
     /* Admin Navbar per Menu */
     .admin-navbar {
@@ -127,6 +316,7 @@
       margin-bottom: 1.75rem;
       flex-wrap: wrap;
     }
+
     .nav-item {
       display: flex;
       align-items: center;
@@ -142,15 +332,18 @@
       transition: all 0.2s ease;
       font-family: inherit;
     }
+
     .nav-item:hover {
       background: rgba(255, 255, 255, 0.05);
       color: #fff;
     }
+
     .nav-item.active {
       background: rgba(37, 99, 235, 0.25);
       color: #60a5fa;
       border: 1px solid rgba(37, 99, 235, 0.4);
     }
+
     .nav-badge {
       background: rgba(255, 255, 255, 0.08);
       color: #fff;
@@ -159,6 +352,7 @@
       border-radius: 10px;
       font-weight: 700;
     }
+
     .nav-item.active .nav-badge {
       background: #2563eb;
       color: #fff;
@@ -171,6 +365,7 @@
       border-radius: 14px;
       padding: 1.5rem;
     }
+
     .panel-header {
       display: flex;
       justify-content: space-between;
@@ -179,38 +374,131 @@
       flex-wrap: wrap;
       gap: 1rem;
     }
-    .panel-title { font-size: 1.15rem; font-weight: 600; }
-    
-    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
-    th { text-align: left; padding: 0.75rem 1rem; color: var(--text-muted); border-bottom: 1px solid var(--border); font-size: 0.75rem; text-transform: uppercase; }
-    td { padding: 0.85rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
-    tr:hover td { background: rgba(255,255,255,0.02); }
 
-    .thumb { width: 48px; height: 48px; border-radius: 8px; object-fit: cover; }
-    .status-badge { font-size: 0.75rem; padding: 0.2rem 0.55rem; border-radius: 12px; font-weight: 600; display: inline-block; }
-    .status-badge.green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-    .status-badge.blue { background: rgba(37, 99, 235, 0.15); color: #60a5fa; }
-    .status-badge.gold { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .panel-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      vertical-align: middle;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .status-badge {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 12px;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .status-badge.green {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+    }
+
+    .status-badge.blue {
+      background: rgba(37, 99, 235, 0.15);
+      color: #60a5fa;
+    }
+
+    .status-badge.gold {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+    }
 
     /* Modal */
     .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
-      display: flex; align-items: center; justify-content: center; z-index: 100;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
       padding: 1rem;
     }
+
     .modal {
-      background: #111827; border: 1px solid var(--border); border-radius: 14px;
-      width: 100%; max-width: 580px; padding: 1.75rem; max-height: 90vh; overflow-y: auto;
+      background: #111827;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 580px;
+      padding: 1.75rem;
+      max-height: 90vh;
+      overflow-y: auto;
     }
-    .modal-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.25rem; font-family: 'Outfit', sans-serif; }
-    .form-group { margin-bottom: 1rem; }
-    .form-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.35rem; }
+
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+
     .form-input {
-      width: 100%; padding: 0.65rem 0.85rem; background: #1f2937; border: 1px solid #374151;
-      border-radius: 8px; color: #fff; font-size: 0.88rem; outline: none; font-family: inherit;
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.88rem;
+      outline: none;
+      font-family: inherit;
     }
-    .form-input:focus { border-color: var(--primary); }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; }
+
+    .form-input:focus {
+      border-color: var(--primary);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
 
     /* Upload Box */
     .upload-box {
@@ -223,6 +511,7 @@
       transition: all 0.2s ease;
       margin-bottom: 0.75rem;
     }
+
     .upload-box:hover {
       border-color: var(--primary);
       background: rgba(37, 99, 235, 0.05);
@@ -230,18 +519,25 @@
 
     /* Login Screen */
     .login-container {
-      max-width: 400px; margin: 5rem auto; background: var(--card-bg);
-      border: 1px solid var(--border); border-radius: 14px; padding: 2rem; text-align: center;
+      max-width: 400px;
+      margin: 5rem auto;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2rem;
+      text-align: center;
     }
   </style>
 </head>
+
 <body>
 
   <!-- 1. LOGIN SCREEN -->
   <div id="login-view" class="login-container" style="display: none;">
     <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎻</div>
     <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; margin-bottom: 0.3rem;">Manajemen Sistem OTA</h2>
-    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">Masuk dengan akun staf atau administrator</p>
+    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">Masuk dengan akun staf atau
+      administrator</p>
 
     <div style="text-align: left;" class="form-group">
       <label class="form-label">Email Administrator</label>
@@ -252,7 +548,8 @@
       <input type="password" id="login-password" class="form-input" value="admin123">
     </div>
 
-    <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;" onclick="handleLogin()">
+    <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;"
+      onclick="handleLogin()">
       Masuk ke Manajemen Sistem
     </button>
   </div>
@@ -263,13 +560,14 @@
       <div class="brand">
         <div class="brand-icon">🎻</div>
         <div>
-          <div class="brand-title">Violincello <span class="badge-admin">Admin Backend</span></div>
-          <p style="font-size: 0.75rem; color: var(--text-muted);">Sistem Pengelolaan Destinasi, Hotel, Penerbangan, dan Blog</p>
+          <div class="brand-title">Violincello <span class="badge-admin">Admin</span></div>
+          <p style="font-size: 0.75rem; color: var(--text-muted);">Sistem Pengelolaan Destinasi, Hotel, Penerbangan, dan
+            Blog</p>
         </div>
       </div>
       <div style="display: flex; gap: 0.75rem;">
         <a href="http://localhost:3000" target="_blank" class="btn btn-outline">
-          🌐 Buka Landing Page Publik
+          Tes landing Page
         </a>
         <button class="btn btn-danger" onclick="handleLogout()">Keluar</button>
       </div>
@@ -294,6 +592,36 @@
         <div class="kpi-num" id="kpi-blogs">0</div>
       </div>
     </div>
+
+    <!-- Grafik Batang Analisis & Kapasitas Inventaris (Antislop Compliant) -->
+    <section class="chart-panel" aria-label="Grafik Statistik dan Kapasitas Inventaris">
+      <div class="chart-header">
+        <div class="chart-title-wrap">
+          <div class="chart-title">
+            <span>📊</span>
+            <span>Grafik Distribusi & Kapasitas Inventaris</span>
+          </div>
+          <p class="chart-subtitle">Visualisasi perbandingan kuantitas dan alokasi unit real-time sistem Violincello</p>
+        </div>
+        <div class="chart-controls" role="tablist" aria-label="Pilihan Data Grafik">
+          <button class="chart-tab-btn active" id="btn-chart-hotel" onclick="setChartMode('hotel')" role="tab" aria-selected="true">
+            Kamar Hotel
+          </button>
+          <button class="chart-tab-btn" id="btn-chart-flight" onclick="setChartMode('flight')" role="tab" aria-selected="false">
+            Kursi Pesawat
+          </button>
+          <button class="chart-tab-btn" id="btn-chart-inventory" onclick="setChartMode('inventory')" role="tab" aria-selected="false">
+            Total Inventaris
+          </button>
+        </div>
+      </div>
+
+      <div class="chart-container" id="chart-viewport">
+        <svg id="bar-chart-svg" class="chart-svg" viewBox="0 0 800 260" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Visualisasi Grafik Batang"></svg>
+      </div>
+
+      <div class="chart-stats-row" id="chart-summary-stats"></div>
+    </section>
 
     <!-- Navigasi Bar Per Menu (Dedicated Navigation Bar) -->
     <nav class="admin-navbar">
@@ -324,7 +652,8 @@
       <div class="panel-header">
         <div>
           <div class="panel-title">Katalog Destinasi Wisata Nusantara</div>
-          <p style="font-size: 0.8rem; color: var(--text-muted);">Kelola objek wisata Nusantara yang ditampilkan di halaman utama</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Kelola objek wisata Nusantara yang ditampilkan di
+            halaman utama</p>
         </div>
         <button class="btn btn-primary" onclick="openDestModal()">+ Tambah Destinasi</button>
       </div>
@@ -348,7 +677,8 @@
       <div class="panel-header">
         <div>
           <div class="panel-title">Daftar Properti Hotel & Resor</div>
-          <p style="font-size: 0.8rem; color: var(--text-muted);">Kelola akomodasi kamar hotel, harga per malam, dan ketersediaan</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Kelola akomodasi kamar hotel, harga per malam, dan
+            ketersediaan</p>
         </div>
         <button class="btn btn-primary" onclick="openHotelModal()">+ Tambah Hotel</button>
       </div>
@@ -373,7 +703,8 @@
       <div class="panel-header">
         <div>
           <div class="panel-title">Jadwal Tiket Penerbangan Domestik</div>
-          <p style="font-size: 0.8rem; color: var(--text-muted);">Kelola rute penerbangan, alokasi kursi penumpang, dan tarif tiket</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Kelola rute penerbangan, alokasi kursi penumpang, dan
+            tarif tiket</p>
         </div>
         <button class="btn btn-primary" onclick="openFlightModal()">+ Tambah Tiket Pesawat</button>
       </div>
@@ -398,7 +729,8 @@
       <div class="panel-header">
         <div>
           <div class="panel-title">Katalog Blog & Artikel Wisata</div>
-          <p style="font-size: 0.8rem; color: var(--text-muted);">Tulis artikel panduan wisata, kelola konten cerita, dan unggah foto artikel</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Tulis artikel panduan wisata, kelola konten cerita,
+            dan unggah foto artikel</p>
         </div>
         <button class="btn btn-primary" onclick="openBlogModal()">+ Tulis Artikel Baru</button>
       </div>
@@ -424,7 +756,7 @@
   </div>
 
   <script>
-    const API_BASE = 'http://localhost:8000/api'
+    const API_BASE = (window.location.origin || 'http://localhost:8000') + '/api'
     let token = localStorage.getItem('violincello_backend_token') || 'violincello-admin-token-2026'
     let allDestinations = []
     let allHotels = []
@@ -475,7 +807,7 @@
       document.getElementById('tab-hotel').style.display = tab === 'hotel' ? 'block' : 'none'
       document.getElementById('tab-flight').style.display = tab === 'flight' ? 'block' : 'none'
       document.getElementById('tab-blog').style.display = tab === 'blog' ? 'block' : 'none'
-      
+
       document.getElementById('tab-btn-dest').classList.toggle('active', tab === 'dest')
       document.getElementById('tab-btn-hotel').classList.toggle('active', tab === 'hotel')
       document.getElementById('tab-btn-flight').classList.toggle('active', tab === 'flight')
@@ -520,9 +852,192 @@
         renderHotels(allHotels)
         renderFlights(allFlights)
         renderBlogs(allBlogs)
+        renderChart()
       } catch (err) {
         console.error('Error fetching admin data:', err)
       }
+    }
+
+    let currentChartMode = 'hotel'
+
+    function setChartMode(mode) {
+      currentChartMode = mode
+      const btnHotel = document.getElementById('btn-chart-hotel')
+      const btnFlight = document.getElementById('btn-chart-flight')
+      const btnInv = document.getElementById('btn-chart-inventory')
+
+      if (btnHotel) {
+        btnHotel.classList.toggle('active', mode === 'hotel')
+        btnHotel.setAttribute('aria-selected', mode === 'hotel')
+      }
+      if (btnFlight) {
+        btnFlight.classList.toggle('active', mode === 'flight')
+        btnFlight.setAttribute('aria-selected', mode === 'flight')
+      }
+      if (btnInv) {
+        btnInv.classList.toggle('active', mode === 'inventory')
+        btnInv.setAttribute('aria-selected', mode === 'inventory')
+      }
+      renderChart()
+    }
+
+    function renderChart() {
+      const svg = document.getElementById('bar-chart-svg')
+      const statsContainer = document.getElementById('chart-summary-stats')
+      if (!svg) return
+
+      let items = []
+      let stat1 = { label: '', value: '' }
+      let stat2 = { label: '', value: '' }
+      let stat3 = { label: '', value: '' }
+      let barColor = '#3b82f6'
+
+      if (currentChartMode === 'hotel') {
+        barColor = '#3b82f6'
+        items = allHotels.map(h => ({
+          label: h.name,
+          fullLabel: `${h.name} (${h.city})`,
+          value: Number(h.availableRooms) || 0,
+          unit: 'Kamar',
+          color: '#3b82f6'
+        }))
+        const totalRooms = items.reduce((acc, cur) => acc + cur.value, 0)
+        const avgRooms = items.length > 0 ? (totalRooms / items.length).toFixed(1) : 0
+        const maxItem = items.length > 0 ? items.reduce((max, cur) => cur.value > max.value ? cur : max, items[0]) : null
+
+        stat1 = { label: 'Total Kamar Siap Huni', value: `${totalRooms.toLocaleString('id-ID')} Kamar` }
+        stat2 = { label: 'Rata-rata per Properti', value: `${avgRooms} Kamar` }
+        stat3 = { label: 'Kapasitas Tertinggi', value: maxItem ? `${maxItem.label} (${maxItem.value} Kamar)` : 'N/A' }
+      } else if (currentChartMode === 'flight') {
+        barColor = '#0ea5e9'
+        items = allFlights.map(f => ({
+          label: `${f.airline} ${f.flightNumber}`,
+          fullLabel: `${f.airline} ${f.flightNumber} (${f.originCode} ke ${f.destCode})`,
+          value: Number(f.seats) || 0,
+          unit: 'Kursi',
+          color: '#0ea5e9'
+        }))
+        const totalSeats = items.reduce((acc, cur) => acc + cur.value, 0)
+        const avgSeats = items.length > 0 ? (totalSeats / items.length).toFixed(1) : 0
+        const maxFlight = items.length > 0 ? items.reduce((max, cur) => cur.value > max.value ? cur : max, items[0]) : null
+
+        stat1 = { label: 'Total Kursi Tersedia', value: `${totalSeats.toLocaleString('id-ID')} Kursi` }
+        stat2 = { label: 'Rata-rata per Armada', value: `${avgSeats} Kursi` }
+        stat3 = { label: 'Alokasi Terbesar', value: maxFlight ? `${maxFlight.label} (${maxFlight.value} Kursi)` : 'N/A' }
+      } else {
+        // Mode Inventory
+        items = [
+          { label: 'Destinasi', fullLabel: 'Katalog Destinasi Wisata', value: allDestinations.length, unit: 'Destinasi', color: '#10b981' },
+          { label: 'Hotel', fullLabel: 'Properti Hotel & Resor', value: allHotels.length, unit: 'Hotel', color: '#3b82f6' },
+          { label: 'Penerbangan', fullLabel: 'Jadwal Rute Penerbangan', value: allFlights.length, unit: 'Rute', color: '#0ea5e9' },
+          { label: 'Artikel Blog', fullLabel: 'Artikel Publikasi Blog', value: allBlogs.length, unit: 'Artikel', color: '#f59e0b' }
+        ]
+        const totalEntries = items.reduce((acc, cur) => acc + cur.value, 0)
+        const dominant = items.reduce((max, cur) => cur.value > max.value ? cur : max, items[0])
+
+        stat1 = { label: 'Total Entri Sistem', value: `${totalEntries.toLocaleString('id-ID')} Data` }
+        stat2 = { label: 'Kategori Terbanyak', value: dominant ? `${dominant.label} (${dominant.value})` : 'N/A' }
+        stat3 = { label: 'Integritas Data', value: 'Sinkron Database (db.json)' }
+      }
+
+      // Empty State Handling (C-4 & R-27)
+      if (items.length === 0) {
+        svg.innerHTML = `
+          <text x="400" y="130" text-anchor="middle" fill="#9ca3af" font-size="13" font-family="'Plus Jakarta Sans', sans-serif">
+            Belum ada data tersedia untuk ditampilkan pada grafik ini.
+          </text>
+        `
+        if (statsContainer) statsContainer.innerHTML = ''
+        return
+      }
+
+      // Update Summary Stats Row (C-1 & C-5)
+      if (statsContainer) {
+        statsContainer.innerHTML = `
+          <div class="chart-stat-item">
+            <span class="chart-stat-label">${stat1.label}</span>
+            <span class="chart-stat-value">${stat1.value}</span>
+          </div>
+          <div class="chart-stat-item">
+            <span class="chart-stat-label">${stat2.label}</span>
+            <span class="chart-stat-value">${stat2.value}</span>
+          </div>
+          <div class="chart-stat-item">
+            <span class="chart-stat-label">${stat3.label}</span>
+            <span class="chart-stat-value">${stat3.value}</span>
+          </div>
+        `
+      }
+
+      // SVG Chart Layout
+      const svgWidth = 800
+      const svgHeight = 260
+      const padLeft = 55
+      const padRight = 30
+      const padTop = 35
+      const padBottom = 45
+      const chartWidth = svgWidth - padLeft - padRight
+      const chartHeight = svgHeight - padTop - padBottom
+
+      const maxVal = Math.max(...items.map(i => i.value), 4)
+      const roundedMax = Math.ceil(maxVal / 4) * 4
+
+      let svgContent = ''
+
+      // Horizontal Reference Lines & Labels (WCAG contrast compliant, no em dash)
+      const ticks = 4
+      for (let t = 0; t <= ticks; t++) {
+        const val = Math.round((roundedMax / ticks) * t)
+        const y = padTop + chartHeight - (t / ticks) * chartHeight
+        svgContent += `
+          <line x1="${padLeft}" y1="${y}" x2="${svgWidth - padRight}" y2="${y}" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3 3" />
+          <text x="${padLeft - 10}" y="${y + 4}" text-anchor="end" fill="#9ca3af" font-size="11" font-family="'Plus Jakarta Sans', sans-serif">${val}</text>
+        `
+      }
+
+      // Baseline Axis
+      svgContent += `
+        <line x1="${padLeft}" y1="${padTop + chartHeight}" x2="${svgWidth - padRight}" y2="${padTop + chartHeight}" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" />
+      `
+
+      // Bars & Labels (Slim, flat-bottomed, refined)
+      const n = items.length
+      const groupWidth = chartWidth / n
+      // Ramping & pipih: lebar bar dibuat proporsional ramping (20px - 22px), tidak cembung
+      const barWidth = Math.min(22, Math.max(16, Math.round(groupWidth * 0.16)))
+
+      items.forEach((item, idx) => {
+        const x = padLeft + idx * groupWidth + (groupWidth - barWidth) / 2
+        const barH = roundedMax > 0 ? (item.value / roundedMax) * chartHeight : 0
+        const y = padTop + chartHeight - barH
+        const fill = item.color || barColor
+
+        let displayLabel = item.label
+        if (displayLabel.length > 16) {
+          displayLabel = displayLabel.substring(0, 14) + '..'
+        }
+
+        // Radius puncak mikro (2px), dasar bar datar tegak lurus pada garis basis
+        const r = Math.min(2, barH / 2)
+        const barPath = barH <= 2
+          ? `M ${x} ${padTop + chartHeight} L ${x} ${y} L ${x + barWidth} ${y} L ${x + barWidth} ${padTop + chartHeight} Z`
+          : `M ${x} ${padTop + chartHeight} L ${x} ${y + r} Q ${x} ${y} ${x + r} ${y} L ${x + barWidth - r} ${y} Q ${x + barWidth} ${y} ${x + barWidth} ${y + r} L ${x + barWidth} ${padTop + chartHeight} Z`
+
+        svgContent += `
+          <g class="chart-bar-group">
+            <title>${item.fullLabel}: ${item.value} ${item.unit}</title>
+            <path class="chart-bar-rect" d="${barPath}" fill="${fill}" />
+            <text x="${x + barWidth / 2}" y="${y - 8}" text-anchor="middle" fill="#f3f4f6" font-size="11" font-weight="600" font-family="'Outfit', sans-serif">
+              ${item.value}
+            </text>
+            <text x="${x + barWidth / 2}" y="${padTop + chartHeight + 19}" text-anchor="middle" fill="#9ca3af" font-size="11" font-weight="500" font-family="'Plus Jakarta Sans', sans-serif">
+              ${displayLabel}
+            </text>
+          </g>
+        `
+      })
+
+      svg.innerHTML = svgContent
     }
 
     function renderDest(items) {
@@ -1012,4 +1527,5 @@
     checkAuth()
   </script>
 </body>
+
 </html>

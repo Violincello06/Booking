@@ -1,15 +1,15 @@
 <template>
   <div class="travel-app">
     <!-- 1. NAVIGATION BAR -->
-    <header class="navbar glass-panel">
+    <header class="navbar">
       <div class="container nav-content">
         <div class="brand-group">
           <div class="brand-logo">
             <span class="logo-icon">🎻</span>
           </div>
           <div>
-            <h2 class="brand-title">Violincello <span class="text-gradient">Travel</span></h2>
-            <p class="brand-subtitle">Online Travel Agent & Reservasi Nusantara</p>
+            <h2 class="brand-title">CelloTrav <span class="text-gradient">Experience</span></h2>
+            <p class="brand-subtitle">CelloTrav - Platform Reservasi Hotel & Tiket Pesawat Nusantara</p>
           </div>
         </div>
 
@@ -62,7 +62,7 @@
         <div class="badge badge-primary animate-float">📍 Biro Perjalanan Terverifikasi Nusantara</div>
         <h1 class="hero-title">
           Rencanakan Liburan & Perjalanan Anda Bersama <br />
-          <span class="text-gradient">Violincello Travel Experience</span>
+          <span class="text-gradient">CelloTrav Travel Experience</span>
         </h1>
         <p class="hero-desc">
           Temukan destinasi eksotis Nusantara, akomodasi hotel berbintang terverifikasi, dan jadwal penerbangan langsung dengan tarif transparan tanpa biaya tersembunyi.
@@ -236,7 +236,7 @@
         <div v-else class="cards-grid">
           <div v-for="hotel in hotels" :key="hotel.id" class="glass-card hotel-card">
             <div class="hotel-media">
-              <img :src="hotel.image" :alt="hotel.name" class="hotel-img" loading="lazy" />
+              <img :src="hotel.image" :alt="hotel.name" class="hotel-img" loading="lazy" @error="onImageError($event, hotel.id)" />
               <div class="hotel-badge-floating">
                 <span class="badge badge-success">{{ hotel.tag || 'Rekomendasi' }}</span>
               </div>
@@ -296,7 +296,7 @@
               <div class="airline-badge">
                 <div class="airline-icon">{{ flight.airlineCode || 'VN' }}</div>
                 <div>
-                  <h4 style="font-size: 1.05rem;">{{ flight.airlineName || flight.airline }}</h4>
+                  <h4 style="font-size: 1.05rem;">{{ flight.airlineName }}</h4>
                   <span class="badge badge-primary" style="font-size: 0.7rem;">{{ flight.flightNumber }}</span>
                   <span style="margin-left: 0.5rem; font-size: 0.75rem; color: var(--text-dim);">{{ flight.classType || flight.class || 'Ekonomi' }}</span>
                 </div>
@@ -326,7 +326,7 @@
                 <span class="price-sub">Tersisa {{ flight.seats }} kursi</span>
                 <span class="price-amount">Rp {{ Number(flight.price).toLocaleString('id-ID') }}</span>
               </div>
-              <button class="btn btn-glow" :id="'btn-book-flight-' + flight.id" @click="openBooking('flight', (flight.airlineName || flight.airline) + ' ' + flight.flightNumber, flight.price)">
+              <button class="btn btn-glow" :id="'btn-book-flight-' + flight.id" @click="openBooking('flight', flight.airlineName + ' ' + flight.flightNumber, flight.price)">
                 Pilih Tiket
               </button>
             </div>
@@ -388,7 +388,7 @@
       <section class="catalog-section" id="komitmen" style="border-top: 1px solid var(--border-glass); padding-top: 4rem;">
         <div class="section-header text-center" style="display: block; margin-bottom: 2.5rem;">
           <span class="badge badge-primary">Standar Layanan</span>
-          <h2 class="section-title">Kenapa Merencanakan Bersama Violincello</h2>
+          <h2 class="section-title">Kenapa Merencanakan Bersama CelloTrav</h2>
           <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 600px; margin: 0.5rem auto 0;">
             Nilai nyata yang kami pegang untuk setiap perjalanan Anda, tanpa janji palsu atau biaya tak terduga.
           </p>
@@ -508,7 +508,7 @@
       <div class="container footer-content">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-glass);">
           <div>
-            <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem;">Violincello Travel Experience</h3>
+            <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem;">CelloTrav Travel Experience</h3>
             <p style="color: var(--text-muted); font-size: 0.85rem;">Layanan reservasi akomodasi hotel berbintang & tiket penerbangan langsung terpercaya di Indonesia.</p>
           </div>
           <div>
@@ -518,7 +518,7 @@
           </div>
         </div>
         <p style="color: var(--text-muted); font-size: 0.82rem; margin-top: 1.25rem; text-align: center;">
-          © 2026 Violincello OTA. Menerapkan panduan Anti-Slop: Informasi akurat, bebas frasa klise AI, desain fungsional.
+          © 2026 CelloTrav. Menerapkan panduan Anti-Slop: Informasi akurat, bebas frasa klise AI, desain fungsional.
         </p>
       </div>
     </footer>
@@ -610,6 +610,110 @@ function quickFilterDestination(dest) {
   showToast(`Menampilkan daftar hotel di sekitar ${dest.name}`, 'info')
 }
 
+// Normalization Helpers
+function onImageError(event, fallbackIdx = 0) {
+  const fallbacks = [
+    'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=800&q=80'
+  ]
+  if (event && event.target) {
+    event.target.src = fallbacks[Math.abs(fallbackIdx || 0) % fallbacks.length]
+  }
+}
+
+function formatFlightTime(isoOrTime) {
+  if (!isoOrTime) return '08:00'
+  const str = String(isoOrTime)
+  if (str.includes('T')) {
+    const d = new Date(str)
+    if (!isNaN(d.getTime())) {
+      const h = String(d.getHours()).padStart(2, '0')
+      const m = String(d.getMinutes()).padStart(2, '0')
+      return `${h}:${m}`
+    }
+  }
+  return str
+}
+
+function formatFlightDuration(dur) {
+  if (typeof dur === 'number') {
+    const hours = Math.floor(dur / 60)
+    const mins = dur % 60
+    return `${hours}j ${mins}m`
+  }
+  return dur ? String(dur) : '1j 45m'
+}
+
+function normalizeHotel(h) {
+  const fallbackImages = [
+    'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=800&q=80'
+  ]
+  const defaultImg = fallbackImages[Math.abs(h.id || 0) % fallbackImages.length]
+
+  const rawPrice = h.price ?? h.min_price ?? h.rooms?.[0]?.price_per_night ?? 750000
+  const price = !isNaN(Number(rawPrice)) && Number(rawPrice) > 0 ? Number(rawPrice) : 750000
+
+  const city = h.city || h.destination?.city || h.destination?.name || h.address || 'Indonesia'
+  const image = h.image || h.rooms?.[0]?.image || h.destination?.image || defaultImg
+  const stars = h.stars || h.star_rating || 4
+
+  return {
+    ...h,
+    name: h.name || 'Properti Hotel',
+    city,
+    image,
+    price,
+    stars,
+    tag: h.tag || (stars >= 5 ? 'Resor Mewah' : 'Rekomendasi'),
+    rating_score: h.average_rating || h.rating_score || h.rating || 4.8,
+    amenities: h.amenities || ['Free WiFi', 'Breakfast', 'AC', 'Swimming Pool']
+  }
+}
+
+function normalizeFlight(f) {
+  const airlineObj = typeof f.airline === 'object' && f.airline !== null ? f.airline : null
+  const airlineName = airlineObj?.name || f.airlineName || (typeof f.airline === 'string' ? f.airline : 'Maskapai Domestik')
+  const airlineCode = airlineObj?.code || f.airlineCode || 'JT'
+
+  const flightNumber = f.flight_number || f.flightNumber || `${airlineCode}-101`
+  const depTime = formatFlightTime(f.departure_time || f.depTime || '08:00')
+  const arrTime = formatFlightTime(f.arrival_time || f.arrTime || '10:30')
+  const duration = formatFlightDuration(f.duration)
+
+  const originCode = f.departure_airport?.code || f.originCode || 'CGK'
+  const originCity = f.departure_airport?.city || f.originCity || 'Jakarta'
+  const destCode = f.arrival_airport?.code || f.destCode || 'DPS'
+  const destCity = f.arrival_airport?.city || f.destCity || 'Bali'
+
+  const rawPrice = f.price ?? 950000
+  const price = !isNaN(Number(rawPrice)) && Number(rawPrice) > 0 ? Number(rawPrice) : 950000
+
+  const seats = f.available_seats ?? f.seats ?? f.total_seats ?? 45
+  const classType = f.classType || f.class || 'Ekonomi'
+
+  return {
+    ...f,
+    airlineName,
+    airlineCode,
+    flightNumber,
+    depTime,
+    arrTime,
+    duration,
+    originCode,
+    originCity,
+    destCode,
+    destCity,
+    price,
+    seats,
+    classType
+  }
+}
+
 // Data Fetchers from Backend Engine (Port 8000 Express Server / Nuxt API fallback)
 async function fetchDestinations() {
   loadingDestinations.value = true
@@ -632,7 +736,8 @@ async function fetchHotels() {
     if (hotelFilterSort.value) params.sortBy = hotelFilterSort.value
 
     const res = await $fetch('http://localhost:8000/api/v1/hotels', { params }).catch(() => $fetch('/api/v1/hotels', { params }))
-    hotels.value = res.data || []
+    const rawList = res.data || []
+    hotels.value = rawList.map(normalizeHotel)
   } catch (err) {
     console.error('Fetch hotels error:', err)
   } finally {
@@ -648,7 +753,8 @@ async function fetchFlights() {
     if (flightFilterDest.value) params.destination = flightFilterDest.value
 
     const res = await $fetch('http://localhost:8000/api/v1/flights', { params }).catch(() => $fetch('/api/v1/flights', { params }))
-    flights.value = res.data || []
+    const rawList = res.data || []
+    flights.value = rawList.map(normalizeFlight)
   } catch (err) {
     console.error('Fetch flights error:', err)
   } finally {
@@ -696,10 +802,20 @@ onMounted(() => {
 
 .navbar {
   position: sticky;
-  top: 1rem;
+  top: 0;
+  left: 0;
+  width: 100%;
   z-index: 100;
-  margin: 1rem 1.5rem;
-  padding: 0.85rem 1.5rem;
+  margin: 0;
+  padding: 1rem 0;
+  background: rgba(10, 15, 29, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0;
+  box-shadow: none;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
 }
 
 .nav-content {

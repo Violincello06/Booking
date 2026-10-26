@@ -19,6 +19,16 @@
   ],
   "destinations": [
     {
+      "id": 6,
+      "name": "Balinase",
+      "city": "Gilimanuk",
+      "country": "Indonesia",
+      "image": "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80",
+      "description": "Banyak Bule",
+      "rating": 4.8,
+      "badge": "Wisata Unggulan"
+    },
+    {
       "id": 5,
       "name": "Kawah Colomadu",
       "city": "Colomadu",
@@ -74,10 +84,10 @@
       "id": 1,
       "name": "Amnaya Resort Kuta",
       "city": "Kuta, Bali",
-      "stars": 5,
+      "stars": 4,
       "rating": 4.9,
       "price": 1850000,
-      "availableRooms": 14,
+      "availableRooms": 60,
       "tag": "Resor Pantai",
       "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80",
       "amenities": [

@@ -170,3 +170,41 @@ Route::prefix('v1')->group(function () {
         });
     });
 });
+
+// ---------------------------------------------------------------------
+// OTA Management Portal Routes (Supporting public/index.html & db.json)
+// ---------------------------------------------------------------------
+use App\Http\Controllers\Api\OtaDataController;
+
+Route::post('/auth/login', [OtaDataController::class, 'login']);
+Route::post('/upload', [OtaDataController::class, 'upload']);
+
+Route::prefix('admin')->group(function () {
+    Route::get('/dashboard', [OtaDataController::class, 'dashboard']);
+    Route::post('/upload', [OtaDataController::class, 'upload']);
+
+    // Destinations
+    Route::get('/destinations', [OtaDataController::class, 'getDestinations']);
+    Route::post('/destinations', [OtaDataController::class, 'storeDestination']);
+    Route::put('/destinations/{id}', [OtaDataController::class, 'updateDestination']);
+    Route::delete('/destinations/{id}', [OtaDataController::class, 'deleteDestination']);
+
+    // Hotels
+    Route::get('/hotels', [OtaDataController::class, 'getHotels']);
+    Route::post('/hotels', [OtaDataController::class, 'storeHotel']);
+    Route::put('/hotels/{id}', [OtaDataController::class, 'updateHotel']);
+    Route::delete('/hotels/{id}', [OtaDataController::class, 'deleteHotel']);
+
+    // Flights
+    Route::get('/flights', [OtaDataController::class, 'getFlights']);
+    Route::post('/flights', [OtaDataController::class, 'storeFlight']);
+    Route::put('/flights/{id}', [OtaDataController::class, 'updateFlight']);
+    Route::delete('/flights/{id}', [OtaDataController::class, 'deleteFlight']);
+
+    // Blogs
+    Route::get('/blogs', [OtaDataController::class, 'getBlogs']);
+    Route::post('/blogs', [OtaDataController::class, 'storeBlog']);
+    Route::put('/blogs/{id}', [OtaDataController::class, 'updateBlog']);
+    Route::delete('/blogs/{id}', [OtaDataController::class, 'deleteBlog']);
+});
+
