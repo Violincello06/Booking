@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Manajemen Sistem - Violincello OTA (Backend)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(17, 24, 39, 0.85);
+      --border: rgba(255, 255, 255, 0.08);
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --gold: #f59e0b;
+      --danger: #ef4444;
+      --success: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #090d16;
+      color: var(--text);
+      line-height: 1.5;
+      padding: 1.5rem;
+      min-height: 100vh;
+    }
+
+    .container { max-width: 1250px; margin: 0 auto; }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.5rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 1.75rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .brand-icon {
+      font-size: 1.5rem;
+      background: rgba(37, 99, 235, 0.2);
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      border: 1px solid rgba(37, 99, 235, 0.4);
+    }
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .badge-admin {
+      background: var(--gold);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      margin-left: 0.5rem;
+    }
+
+    .btn {
+      padding: 0.55rem 1.1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-decoration: none;
+      font-family: inherit;
+    }
+    .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.78rem; border-radius: 6px; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-outline { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--border); }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); }
+    .btn-warning { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .btn-warning:hover { background: var(--gold); color: #000; }
+    .btn-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .btn-danger:hover { background: var(--danger); color: #fff; }
+
+    /* KPI Summary */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+    .kpi-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .kpi-label { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+    .kpi-num { font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 700; color: #fff; }
+
+    /* Admin Navbar per Menu */
+    .admin-navbar {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0.6rem;
+      margin-bottom: 1.75rem;
+      flex-wrap: wrap;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 0.7rem 1.25rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+    .nav-item.active {
+      background: rgba(37, 99, 235, 0.25);
+      color: #60a5fa;
+      border: 1px solid rgba(37, 99, 235, 0.4);
+    }
+    .nav-badge {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 0.72rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 10px;
+      font-weight: 700;
+    }
+    .nav-item.active .nav-badge {
+      background: #2563eb;
+      color: #fff;
+    }
+
+    /* Table Panels */
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+    }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .panel-title { font-size: 1.15rem; font-weight: 600; }
+    
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th { text-align: left; padding: 0.75rem 1rem; color: var(--text-muted); border-bottom: 1px solid var(--border); font-size: 0.75rem; text-transform: uppercase; }
+    td { padding: 0.85rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .thumb { width: 48px; height: 48px; border-radius: 8px; object-fit: cover; }
+    .status-badge { font-size: 0.75rem; padding: 0.2rem 0.55rem; border-radius: 12px; font-weight: 600; display: inline-block; }
+    .status-badge.green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .status-badge.blue { background: rgba(37, 99, 235, 0.15); color: #60a5fa; }
+    .status-badge.gold { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      display: flex; align-items: center; justify-content: center; z-index: 100;
+      padding: 1rem;
+    }
+    .modal {
+      background: #111827; border: 1px solid var(--border); border-radius: 14px;
+      width: 100%; max-width: 580px; padding: 1.75rem; max-height: 90vh; overflow-y: auto;
+    }
+    .modal-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.25rem; font-family: 'Outfit', sans-serif; }
+    .form-group { margin-bottom: 1rem; }
+    .form-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.35rem; }
+    .form-input {
+      width: 100%; padding: 0.65rem 0.85rem; background: #1f2937; border: 1px solid #374151;
+      border-radius: 8px; color: #fff; font-size: 0.88rem; outline: none; font-family: inherit;
+    }
+    .form-input:focus { border-color: var(--primary); }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; }
+
+    /* Upload Box */
+    .upload-box {
+      border: 2px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      padding: 1.25rem;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.02);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 0.75rem;
+    }
+    .upload-box:hover {
+      border-color: var(--primary);
+      background: rgba(37, 99, 235, 0.05);
+    }
+
+    /* Login Screen */
+    .login-container {
+      max-width: 400px; margin: 5rem auto; background: var(--card-bg);
+      border: 1px solid var(--border); border-radius: 14px; padding: 2rem; text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. LOGIN SCREEN -->
+  <div id="login-view" class="login-container" style="display: none;">
+    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎻</div>
+    <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; margin-bottom: 0.3rem;">Manajemen Sistem OTA</h2>
+    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">Masuk dengan akun staf atau administrator</p>
+
+    <div style="text-align: left;" class="form-group">
+      <label class="form-label">Email Administrator</label>
+      <input type="email" id="login-email" class="form-input" value="admin@violincello.com">
+    </div>
+    <div style="text-align: left;" class="form-group">
+      <label class="form-label">Kata Sandi</label>
+      <input type="password" id="login-password" class="form-input" value="admin123">
+    </div>
+
+    <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;" onclick="handleLogin()">
+      Masuk ke Manajemen Sistem
+    </button>
+  </div>
+
+  <!-- 2. MAIN ADMIN DASHBOARD -->
+  <div id="admin-view" class="container" style="display: none;">
+    <header>
+      <div class="brand">
+        <div class="brand-icon">🎻</div>
+        <div>
+          <div class="brand-title">Violincello <span class="badge-admin">Admin Backend</span></div>
+          <p style="font-size: 0.75rem; color: var(--text-muted);">Sistem Pengelolaan Destinasi, Hotel, Penerbangan, dan Blog</p>
+        </div>
+      </div>
+      <div style="display: flex; gap: 0.75rem;">
+        <a href="http://localhost:3000" target="_blank" class="btn btn-outline">
+          🌐 Buka Landing Page Publik
+        </a>
+        <button class="btn btn-danger" onclick="handleLogout()">Keluar</button>
+      </div>
+    </header>
+
+    <!-- KPI Summary Row -->
+    <div class="kpi-row">
+      <div class="kpi-box">
+        <div class="kpi-label">Destinasi Wisata</div>
+        <div class="kpi-num" id="kpi-dest">0</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-label">Properti Hotel</div>
+        <div class="kpi-num" id="kpi-hotels">0</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-label">Jadwal Tiket Pesawat</div>
+        <div class="kpi-num" id="kpi-flights">0</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-label">Artikel Blog Terbit</div>
+        <div class="kpi-num" id="kpi-blogs">0</div>
+      </div>
+    </div>
+
+    <!-- Navigasi Bar Per Menu (Dedicated Navigation Bar) -->
+    <nav class="admin-navbar">
+      <button class="nav-item active" id="tab-btn-dest" onclick="switchTab('dest')">
+        <span class="nav-icon">🏝️</span>
+        <span class="nav-text">Data Destinasi</span>
+        <span class="nav-badge" id="badge-count-dest">0</span>
+      </button>
+      <button class="nav-item" id="tab-btn-hotel" onclick="switchTab('hotel')">
+        <span class="nav-icon">🏨</span>
+        <span class="nav-text">Data Hotel</span>
+        <span class="nav-badge" id="badge-count-hotel">0</span>
+      </button>
+      <button class="nav-item" id="tab-btn-flight" onclick="switchTab('flight')">
+        <span class="nav-icon">✈️</span>
+        <span class="nav-text">Data Tiket Pesawat</span>
+        <span class="nav-badge" id="badge-count-flight">0</span>
+      </button>
+      <button class="nav-item" id="tab-btn-blog" onclick="switchTab('blog')">
+        <span class="nav-icon">📝</span>
+        <span class="nav-text">Data Blog & Artikel</span>
+        <span class="nav-badge" id="badge-count-blog">0</span>
+      </button>
+    </nav>
+
+    <!-- TAB 1: DESTINASI -->
+    <div id="tab-dest" class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Katalog Destinasi Wisata Nusantara</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Kelola objek wisata Nusantara yang ditampilkan di halaman utama</p>
+        </div>
+        <button class="btn btn-primary" onclick="openDestModal()">+ Tambah Destinasi</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Gambar</th>
+            <th>Nama Destinasi</th>
+            <th>Kota & Wilayah</th>
+            <th>Skor Rating</th>
+            <th>Badge</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="table-dest"></tbody>
+      </table>
+    </div>
+
+    <!-- TAB 2: HOTEL -->
+    <div id="tab-hotel" class="panel" style="display: none;">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Daftar Properti Hotel & Resor</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Kelola akomodasi kamar hotel, harga per malam, dan ketersediaan</p>
+        </div>
+        <button class="btn btn-primary" onclick="openHotelModal()">+ Tambah Hotel</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Gambar</th>
+            <th>Nama Hotel</th>
+            <th>Kota</th>
+            <th>Bintang</th>
+            <th>Harga / Malam</th>
+            <th>Kamar Tersedia</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="table-hotel"></tbody>
+      </table>
+    </div>
+
+    <!-- TAB 3: FLIGHT -->
+    <div id="tab-flight" class="panel" style="display: none;">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Jadwal Tiket Penerbangan Domestik</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Kelola rute penerbangan, alokasi kursi penumpang, dan tarif tiket</p>
+        </div>
+        <button class="btn btn-primary" onclick="openFlightModal()">+ Tambah Tiket Pesawat</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Maskapai & No. Penerbangan</th>
+            <th>Rute Asal ➔ Tujuan</th>
+            <th>Waktu Keberangkatan</th>
+            <th>Durasi</th>
+            <th>Sisa Kursi</th>
+            <th>Harga Tiket</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="table-flight"></tbody>
+      </table>
+    </div>
+
+    <!-- TAB 4: BLOG & ARTIKEL -->
+    <div id="tab-blog" class="panel" style="display: none;">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Katalog Blog & Artikel Wisata</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Tulis artikel panduan wisata, kelola konten cerita, dan unggah foto artikel</p>
+        </div>
+        <button class="btn btn-primary" onclick="openBlogModal()">+ Tulis Artikel Baru</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Foto</th>
+            <th>Judul Artikel</th>
+            <th>Kategori</th>
+            <th>Penulis</th>
+            <th>Waktu Baca / Tanggal</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="table-blog"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MODAL FORM CONTAINER -->
+  <div id="modal-container" class="modal-backdrop" style="display: none;">
+    <div class="modal" id="modal-body"></div>
+  </div>
+
+  <script>
+    const API_BASE = 'http://localhost:8000/api'
+    let token = localStorage.getItem('violincello_backend_token') || 'violincello-admin-token-2026'
+    let allDestinations = []
+    let allHotels = []
+    let allFlights = []
+    let allBlogs = []
+
+    function checkAuth() {
+      if (token) {
+        document.getElementById('login-view').style.display = 'none'
+        document.getElementById('admin-view').style.display = 'block'
+        loadAllData()
+      } else {
+        document.getElementById('login-view').style.display = 'block'
+        document.getElementById('admin-view').style.display = 'none'
+      }
+    }
+
+    async function handleLogin() {
+      const email = document.getElementById('login-email').value
+      const password = document.getElementById('login-password').value
+      try {
+        const res = await fetch(`${API_BASE}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        })
+        const data = await res.json()
+        if (data.success && data.data.user.role === 'admin') {
+          token = data.data.token
+          localStorage.setItem('violincello_backend_token', token)
+          checkAuth()
+        } else {
+          alert(data.message || 'Hanya akun admin yang diizinkan mengakses manajemen.')
+        }
+      } catch (err) {
+        alert('Gagal menghubungi backend server: ' + err.message)
+      }
+    }
+
+    function handleLogout() {
+      token = ''
+      localStorage.removeItem('violincello_backend_token')
+      checkAuth()
+    }
+
+    function switchTab(tab) {
+      document.getElementById('tab-dest').style.display = tab === 'dest' ? 'block' : 'none'
+      document.getElementById('tab-hotel').style.display = tab === 'hotel' ? 'block' : 'none'
+      document.getElementById('tab-flight').style.display = tab === 'flight' ? 'block' : 'none'
+      document.getElementById('tab-blog').style.display = tab === 'blog' ? 'block' : 'none'
+      
+      document.getElementById('tab-btn-dest').classList.toggle('active', tab === 'dest')
+      document.getElementById('tab-btn-hotel').classList.toggle('active', tab === 'hotel')
+      document.getElementById('tab-btn-flight').classList.toggle('active', tab === 'flight')
+      document.getElementById('tab-btn-blog').classList.toggle('active', tab === 'blog')
+    }
+
+    async function loadAllData() {
+      const headers = { 'Authorization': `Bearer ${token}` }
+      try {
+        const [dashRes, destRes, hotelRes, flightRes, blogRes] = await Promise.all([
+          fetch(`${API_BASE}/admin/dashboard`, { headers }),
+          fetch(`${API_BASE}/admin/destinations`, { headers }),
+          fetch(`${API_BASE}/admin/hotels`, { headers }),
+          fetch(`${API_BASE}/admin/flights`, { headers }),
+          fetch(`${API_BASE}/admin/blogs`, { headers })
+        ])
+
+        const dash = await dashRes.json()
+        const dest = await destRes.json()
+        const hotels = await hotelRes.json()
+        const flights = await flightRes.json()
+        const blogs = await blogRes.json()
+
+        allDestinations = dest.data || []
+        allHotels = hotels.data || []
+        allFlights = flights.data || []
+        allBlogs = blogs.data || []
+
+        if (dash.success) {
+          document.getElementById('kpi-dest').textContent = dash.data.totalDestinations
+          document.getElementById('kpi-hotels').textContent = dash.data.totalHotels
+          document.getElementById('kpi-flights').textContent = dash.data.totalFlights
+          document.getElementById('kpi-blogs').textContent = dash.data.totalBlogs || allBlogs.length
+        }
+
+        document.getElementById('badge-count-dest').textContent = allDestinations.length
+        document.getElementById('badge-count-hotel').textContent = allHotels.length
+        document.getElementById('badge-count-flight').textContent = allFlights.length
+        document.getElementById('badge-count-blog').textContent = allBlogs.length
+
+        renderDest(allDestinations)
+        renderHotels(allHotels)
+        renderFlights(allFlights)
+        renderBlogs(allBlogs)
+      } catch (err) {
+        console.error('Error fetching admin data:', err)
+      }
+    }
+
+    function renderDest(items) {
+      const tbody = document.getElementById('table-dest')
+      tbody.innerHTML = items.map(d => `
+        <tr>
+          <td><img src="${d.image}" class="thumb" alt="${d.name}"></td>
+          <td style="font-weight: 600;">${d.name}</td>
+          <td>${d.city}, ${d.country || 'Indonesia'}</td>
+          <td>⭐ ${d.rating}</td>
+          <td><span class="status-badge green">${d.badge || 'Populer'}</span></td>
+          <td>
+            <div style="display: flex; gap: 0.35rem;">
+              <button class="btn btn-warning btn-sm" onclick="openDestModal(${d.id})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteItem('destinations', ${d.id})">Hapus</button>
+            </div>
+          </td>
+        </tr>
+      `).join('')
+    }
+
+    function renderHotels(items) {
+      const tbody = document.getElementById('table-hotel')
+      tbody.innerHTML = items.map(h => `
+        <tr>
+          <td><img src="${h.image}" class="thumb" alt="${h.name}"></td>
+          <td style="font-weight: 600;">${h.name}</td>
+          <td>${h.city}</td>
+          <td>${'★'.repeat(h.stars || 4)}</td>
+          <td style="color: #60a5fa; font-weight: 600;">Rp ${Number(h.price).toLocaleString('id-ID')}</td>
+          <td>${h.availableRooms || 10} Kamar</td>
+          <td>
+            <div style="display: flex; gap: 0.35rem;">
+              <button class="btn btn-warning btn-sm" onclick="openHotelModal(${h.id})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteItem('hotels', ${h.id})">Hapus</button>
+            </div>
+          </td>
+        </tr>
+      `).join('')
+    }
+
+    function renderFlights(items) {
+      const tbody = document.getElementById('table-flight')
+      tbody.innerHTML = items.map(f => `
+        <tr>
+          <td><strong>${f.airline}</strong> <span style="font-size: 0.75rem; color: #9ca3af;">(${f.flightNumber})</span></td>
+          <td>${f.originCode} (${f.originCity}) ➔ ${f.destCode} (${f.destCity})</td>
+          <td>${f.depTime} - ${f.arrTime}</td>
+          <td>${f.duration}</td>
+          <td>${f.seats} Kursi</td>
+          <td style="color: #60a5fa; font-weight: 600;">Rp ${Number(f.price).toLocaleString('id-ID')}</td>
+          <td>
+            <div style="display: flex; gap: 0.35rem;">
+              <button class="btn btn-warning btn-sm" onclick="openFlightModal(${f.id})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteItem('flights', ${f.id})">Hapus</button>
+            </div>
+          </td>
+        </tr>
+      `).join('')
+    }
+
+    function renderBlogs(items) {
+      const tbody = document.getElementById('table-blog')
+      if (items.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">Belum ada artikel blog. Klik "+ Tulis Artikel Baru" untuk membuat cerita.</td></tr>`
+        return
+      }
+      tbody.innerHTML = items.map(b => `
+        <tr>
+          <td><img src="${b.image}" class="thumb" alt="${b.title}"></td>
+          <td>
+            <div style="font-weight: 600; color: #fff; max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${b.title}</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${b.summary || ''}</div>
+          </td>
+          <td><span class="status-badge blue">${b.category || 'Panduan Wisata'}</span></td>
+          <td>${b.author || 'Tim Redaksi'}</td>
+          <td>
+            <div>${b.readTime || '4 menit baca'}</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">${b.date || '-'}</div>
+          </td>
+          <td>
+            <div style="display: flex; gap: 0.35rem;">
+              <button class="btn btn-warning btn-sm" onclick="openBlogModal(${b.id})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteItem('blogs', ${b.id})">Hapus</button>
+            </div>
+          </td>
+        </tr>
+      `).join('')
+    }
+
+    async function deleteItem(resource, id) {
+      if (!confirm('Yakin ingin menghapus data ini?')) return
+      try {
+        await fetch(`${API_BASE}/admin/${resource}/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+        loadAllData()
+      } catch (err) {
+        alert('Gagal menghapus: ' + err.message)
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modal-container').style.display = 'none'
+    }
+
+    function escapeHtml(str) {
+      return (str || '').replace(/"/g, '&quot;')
+    }
+
+    // --- MODAL DESTINASI ---
+    function openDestModal(id = null) {
+      const item = id ? allDestinations.find(d => d.id === id) : null
+      const isEdit = !!item
+      const modal = document.getElementById('modal-body')
+      modal.innerHTML = `
+        <div class="modal-title">${isEdit ? 'Edit Destinasi Wisata' : 'Tambah Destinasi Wisata Baru'}</div>
+        <div class="form-group">
+          <label class="form-label">Nama Destinasi</label>
+          <input type="text" id="m-dest-name" class="form-input" placeholder="Contoh: Kawah Ijen Banyuwangi" value="${isEdit ? escapeHtml(item.name) : ''}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Kota / Area</label>
+          <input type="text" id="m-dest-city" class="form-input" placeholder="Banyuwangi, Jawa Timur" value="${isEdit ? escapeHtml(item.city) : ''}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">URL Gambar</label>
+          <input type="url" id="m-dest-img" class="form-input" value="${isEdit ? escapeHtml(item.image) : 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80'}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Deskripsi Ringkas</label>
+          <textarea id="m-dest-desc" class="form-input" rows="2" placeholder="Daya tarik wisata...">${isEdit ? escapeHtml(item.description) : ''}</textarea>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-outline" onclick="closeModal()">Batal</button>
+          <button class="btn btn-primary" onclick="submitDest(${isEdit ? item.id : 'null'})">
+            ${isEdit ? 'Perbarui Destinasi' : 'Simpan Destinasi'}
+          </button>
+        </div>
+      `
+      document.getElementById('modal-container').style.display = 'flex'
+    }
+
+    async function submitDest(editId = null) {
+      const name = document.getElementById('m-dest-name').value
+      const city = document.getElementById('m-dest-city').value
+      const image = document.getElementById('m-dest-img').value
+      const description = document.getElementById('m-dest-desc').value
+
+      if (!name || !city) return alert('Nama dan kota wajib diisi!')
+
+      const method = editId ? 'PUT' : 'POST'
+      const url = editId ? `${API_BASE}/admin/destinations/${editId}` : `${API_BASE}/admin/destinations`
+
+      await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ name, city, image, description })
+      })
+      closeModal()
+      loadAllData()
+    }
+
+    // --- MODAL HOTEL ---
+    function openHotelModal(id = null) {
+      const item = id ? allHotels.find(h => h.id === id) : null
+      const isEdit = !!item
+      const modal = document.getElementById('modal-body')
+      modal.innerHTML = `
+        <div class="modal-title">${isEdit ? 'Edit Data Hotel' : 'Tambah Hotel Baru'}</div>
+        <div class="form-group">
+          <label class="form-label">Nama Hotel</label>
+          <input type="text" id="m-htl-name" class="form-input" placeholder="Grand Mercure Kuta" value="${isEdit ? escapeHtml(item.name) : ''}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Kota</label>
+          <input type="text" id="m-htl-city" class="form-input" placeholder="Kuta, Bali" value="${isEdit ? escapeHtml(item.city) : ''}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bintang (1-5)</label>
+          <input type="number" id="m-htl-stars" class="form-input" value="${isEdit ? item.stars : 5}" min="1" max="5">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Harga Per Malam (Rp)</label>
+          <input type="number" id="m-htl-price" class="form-input" placeholder="1200000" value="${isEdit ? item.price : ''}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Jumlah Kamar Tersedia</label>
+          <input type="number" id="m-htl-rooms" class="form-input" value="${isEdit ? (item.availableRooms || 10) : 10}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">URL Gambar</label>
+          <input type="url" id="m-htl-img" class="form-input" value="${isEdit ? escapeHtml(item.image) : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80'}">
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-outline" onclick="closeModal()">Batal</button>
+          <button class="btn btn-primary" onclick="submitHotel(${isEdit ? item.id : 'null'})">
+            ${isEdit ? 'Perbarui Hotel' : 'Simpan Hotel'}
+          </button>
+        </div>
+      `
+      document.getElementById('modal-container').style.display = 'flex'
+    }
+
+    async function submitHotel(editId = null) {
+      const name = document.getElementById('m-htl-name').value
+      const city = document.getElementById('m-htl-city').value
+      const stars = Number(document.getElementById('m-htl-stars').value)
+      const price = Number(document.getElementById('m-htl-price').value)
+      const availableRooms = Number(document.getElementById('m-htl-rooms').value)
+      const image = document.getElementById('m-htl-img').value
+
+      if (!name || !city || !price) return alert('Nama, kota, dan harga wajib diisi!')
+
+      const method = editId ? 'PUT' : 'POST'
+      const url = editId ? `${API_BASE}/admin/hotels/${editId}` : `${API_BASE}/admin/hotels`
+
+      await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ name, city, stars, price, availableRooms, image })
+      })
+      closeModal()
+      loadAllData()
+    }
+
+    // --- MODAL PESAWAT ---
+    function openFlightModal(id = null) {
+      const item = id ? allFlights.find(f => f.id === id) : null
+      const isEdit = !!item
+      const modal = document.getElementById('modal-body')
+      modal.innerHTML = `
+        <div class="modal-title">${isEdit ? 'Edit Tiket Pesawat' : 'Tambah Jadwal Tiket Pesawat'}</div>
+        <div class="form-group">
+          <label class="form-label">Maskapai Penerbangan</label>
+          <input type="text" id="m-flt-air" class="form-input" placeholder="Garuda Indonesia" value="${isEdit ? escapeHtml(item.airline) : ''}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nomor Penerbangan</label>
+          <input type="text" id="m-flt-num" class="form-input" placeholder="GA-502" value="${isEdit ? escapeHtml(item.flightNumber) : ''}">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;" class="form-group">
+          <div>
+            <label class="form-label">Asal (Kode Bandara)</label>
+            <input type="text" id="m-flt-orig-code" class="form-input" placeholder="CGK" value="${isEdit ? escapeHtml(item.originCode) : ''}">
+          </div>
+          <div>
+            <label class="form-label">Kota Asal</label>
+            <input type="text" id="m-flt-orig-city" class="form-input" placeholder="Jakarta" value="${isEdit ? escapeHtml(item.originCity) : ''}">
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;" class="form-group">
+          <div>
+            <label class="form-label">Tujuan (Kode Bandara)</label>
+            <input type="text" id="m-flt-dest-code" class="form-input" placeholder="DPS" value="${isEdit ? escapeHtml(item.destCode) : ''}">
+          </div>
+          <div>
+            <label class="form-label">Kota Tujuan</label>
+            <input type="text" id="m-flt-dest-city" class="form-input" placeholder="Bali" value="${isEdit ? escapeHtml(item.destCity) : ''}">
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;" class="form-group">
+          <div>
+            <label class="form-label">Jam Berangkat</label>
+            <input type="text" id="m-flt-dep" class="form-input" value="${isEdit ? escapeHtml(item.depTime) : '09:00'}">
+          </div>
+          <div>
+            <label class="form-label">Jam Tiba</label>
+            <input type="text" id="m-flt-arr" class="form-input" value="${isEdit ? escapeHtml(item.arrTime) : '11:50'}">
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;" class="form-group">
+          <div>
+            <label class="form-label">Harga Tiket (Rp)</label>
+            <input type="number" id="m-flt-price" class="form-input" placeholder="1350000" value="${isEdit ? item.price : ''}">
+          </div>
+          <div>
+            <label class="form-label">Alokasi Kursi</label>
+            <input type="number" id="m-flt-seats" class="form-input" value="${isEdit ? item.seats : 30}">
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-outline" onclick="closeModal()">Batal</button>
+          <button class="btn btn-primary" onclick="submitFlight(${isEdit ? item.id : 'null'})">
+            ${isEdit ? 'Perbarui Tiket' : 'Simpan Tiket'}
+          </button>
+        </div>
+      `
+      document.getElementById('modal-container').style.display = 'flex'
+    }
+
+    async function submitFlight(editId = null) {
+      const airline = document.getElementById('m-flt-air').value
+      const flightNumber = document.getElementById('m-flt-num').value
+      const originCode = document.getElementById('m-flt-orig-code').value
+      const originCity = document.getElementById('m-flt-orig-city').value
+      const destCode = document.getElementById('m-flt-dest-code').value
+      const destCity = document.getElementById('m-flt-dest-city').value
+      const depTime = document.getElementById('m-flt-dep').value
+      const arrTime = document.getElementById('m-flt-arr').value
+      const price = Number(document.getElementById('m-flt-price').value)
+      const seats = Number(document.getElementById('m-flt-seats').value)
+
+      if (!airline || !flightNumber || !originCode || !destCode || !price) {
+        return alert('Harap isi data penerbangan dengan lengkap!')
+      }
+
+      const method = editId ? 'PUT' : 'POST'
+      const url = editId ? `${API_BASE}/admin/flights/${editId}` : `${API_BASE}/admin/flights`
+
+      await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({
+          airline, flightNumber, originCode, originCity, destCode, destCity,
+          depTime, arrTime, price, seats, duration: '2j 0m'
+        })
+      })
+      closeModal()
+      loadAllData()
+    }
+
+    // --- MODAL BLOG & PHOTO UPLOAD ---
+    function openBlogModal(id = null) {
+      const item = id ? allBlogs.find(b => b.id === id) : null
+      const isEdit = !!item
+      const modal = document.getElementById('modal-body')
+      modal.innerHTML = `
+        <div class="modal-title">${isEdit ? 'Edit Artikel Blog' : 'Tulis Artikel Blog Baru'}</div>
+        <div class="form-group">
+          <label class="form-label">Judul Artikel Blog</label>
+          <input type="text" id="m-blog-title" class="form-input" placeholder="Contoh: 5 Tips Eksplorasi Surga Bahari Labuan Bajo" value="${isEdit ? escapeHtml(item.title) : ''}">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;" class="form-group">
+          <div>
+            <label class="form-label">Kategori</label>
+            <select id="m-blog-cat" class="form-input">
+              <option value="Panduan Wisata" ${isEdit && item.category === 'Panduan Wisata' ? 'selected' : ''}>Panduan Wisata</option>
+              <option value="Rekomendasi Hotel" ${isEdit && item.category === 'Rekomendasi Hotel' ? 'selected' : ''}>Rekomendasi Hotel</option>
+              <option value="Kuliner & Budaya" ${isEdit && item.category === 'Kuliner & Budaya' ? 'selected' : ''}>Kuliner & Budaya</option>
+              <option value="Tips Penerbangan" ${isEdit && item.category === 'Tips Penerbangan' ? 'selected' : ''}>Tips Penerbangan</option>
+              <option value="Cerita Petualang" ${isEdit && item.category === 'Cerita Petualang' ? 'selected' : ''}>Cerita Petualang</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Penulis</label>
+            <input type="text" id="m-blog-author" class="form-input" placeholder="Nama Penulis" value="${isEdit ? escapeHtml(item.author) : 'Tim Redaksi Violincello'}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Perkiraan Waktu Baca</label>
+          <input type="text" id="m-blog-readtime" class="form-input" placeholder="Contoh: 4 menit baca" value="${isEdit ? escapeHtml(item.readTime) : '4 menit baca'}">
+        </div>
+
+        <!-- FITUR UPLOAD FOTO BLOG -->
+        <div class="form-group">
+          <label class="form-label">Foto Utama Artikel (Unggah File Gambar atau Masukkan URL)</label>
+          
+          <div class="upload-box" onclick="document.getElementById('m-blog-file').click()">
+            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">📷</div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: #fff;">Klik untuk Pilih & Unggah Foto dari Komputer</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Mendukung PNG, JPG, WebP</div>
+            <input type="file" id="m-blog-file" accept="image/*" style="display: none;" onchange="handleBlogFileUpload(event)">
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Atau URL Gambar Eksternal:</span>
+            <span id="upload-status" style="font-size: 0.75rem; font-weight: 600;"></span>
+          </div>
+          <input type="url" id="m-blog-img" class="form-input" placeholder="http://localhost:8000/uploads/... atau https://..." value="${isEdit ? escapeHtml(item.image) : ''}" oninput="updateBlogPreview(this.value)">
+
+          <div id="blog-preview-box" style="margin-top: 0.65rem; display: ${isEdit && item.image ? 'block' : 'none'};">
+            <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Pratinjau Foto:</span>
+            <img id="blog-preview-img" src="${isEdit ? item.image : ''}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border);">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Ringkasan Singkat (Summary untuk Kartu)</label>
+          <textarea id="m-blog-summary" class="form-input" rows="2" placeholder="Tuliskan 1-2 kalimat ringkasan yang menarik minat pembaca...">${isEdit ? escapeHtml(item.summary) : ''}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Konten Lengkap Cerita & Artikel</label>
+          <textarea id="m-blog-content" class="form-input" rows="6" placeholder="Tuliskan isi panduan, cerita perjalanan, rekomendasi akomodasi secara lengkap...">${isEdit ? escapeHtml(item.content) : ''}</textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-outline" onclick="closeModal()">Batal</button>
+          <button class="btn btn-primary" onclick="submitBlog(${isEdit ? item.id : 'null'})">
+            ${isEdit ? 'Perbarui Artikel' : 'Terbitkan Artikel'}
+          </button>
+        </div>
+      `
+      document.getElementById('modal-container').style.display = 'flex'
+    }
+
+    function updateBlogPreview(url) {
+      if (url && url.trim().length > 5) {
+        document.getElementById('blog-preview-img').src = url.trim()
+        document.getElementById('blog-preview-box').style.display = 'block'
+      } else {
+        document.getElementById('blog-preview-box').style.display = 'none'
+      }
+    }
+
+    async function handleBlogFileUpload(event) {
+      const file = event.target.files[0]
+      if (!file) return
+
+      const statusEl = document.getElementById('upload-status')
+      statusEl.innerText = '⏳ Mengunggah foto...'
+      statusEl.style.color = '#f59e0b'
+
+      const reader = new FileReader()
+      reader.onload = async (e) => {
+        const base64 = e.target.result
+        document.getElementById('blog-preview-img').src = base64
+        document.getElementById('blog-preview-box').style.display = 'block'
+
+        try {
+          const res = await fetch(`${API_BASE}/admin/upload`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ image: base64, filename: file.name })
+          })
+          const json = await res.json()
+          if (json.success && json.data && json.data.url) {
+            document.getElementById('m-blog-img').value = json.data.url
+            statusEl.innerText = '✓ Foto berhasil diunggah ke server!'
+            statusEl.style.color = '#10b981'
+          } else {
+            statusEl.innerText = 'Foto dimuat secara lokal'
+            statusEl.style.color = '#60a5fa'
+          }
+        } catch (err) {
+          statusEl.innerText = 'Pratinjau lokal aktif'
+          document.getElementById('m-blog-img').value = base64
+        }
+      }
+      reader.readAsDataURL(file)
+    }
+
+    async function submitBlog(editId = null) {
+      const title = document.getElementById('m-blog-title').value.trim()
+      const category = document.getElementById('m-blog-cat').value
+      const author = document.getElementById('m-blog-author').value.trim()
+      const readTime = document.getElementById('m-blog-readtime').value.trim()
+      const image = document.getElementById('m-blog-img').value.trim()
+      const summary = document.getElementById('m-blog-summary').value.trim()
+      const content = document.getElementById('m-blog-content').value.trim()
+
+      if (!title || !content) {
+        return alert('Judul artikel dan konten artikel wajib diisi!')
+      }
+
+      const method = editId ? 'PUT' : 'POST'
+      const url = editId ? `${API_BASE}/admin/blogs/${editId}` : `${API_BASE}/admin/blogs`
+
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({
+            title, category, author, readTime, image, summary, content
+          })
+        })
+        const json = await res.json()
+        if (json.success) {
+          closeModal()
+          loadAllData()
+        } else {
+          alert('Gagal menyimpan: ' + (json.message || 'Terjadi kesalahan'))
+        }
+      } catch (err) {
+        alert('Terjadi kesalahan saat menyimpan artikel: ' + err.message)
+      }
+    }
+
+    // Inisialisasi
+    checkAuth()
+  </script>
+</body>
+</html>
