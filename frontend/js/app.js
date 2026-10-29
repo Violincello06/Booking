@@ -203,8 +203,133 @@ function submitBooking(e) {
   document.getElementById('booking-form').reset()
 }
 
+// Hero Banner Carousel Logic (6 Destinasi Unggulan)
+let currentHeroSlide = 0
+let heroBannersData = [
+  {
+    id: 1,
+    title: 'Pesona Bahari Kepulauan Raja Ampat',
+    location: 'Waisai, Papua Barat Daya',
+    badge: 'Surga Bawah Laut',
+    description: 'Gugusan pulau karang zamrud dan terumbu karang dengan keanekaragaman hayati laut terkaya di dunia.',
+    image: 'https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?auto=format&fit=crop&w=1600&q=85',
+    ctaText: 'Jelajahi Raja Ampat'
+  },
+  {
+    id: 2,
+    title: 'Keajaiban Alam Labuan Bajo & Komodo',
+    location: 'Manggarai Barat, Nusa Tenggara Timur',
+    badge: 'Warisan Dunia UNESCO',
+    description: 'Panorama perbukitan sabana tiga warna dan habitat asli kadal purba terbesar di muka bumi.',
+    image: 'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=1600&q=85',
+    ctaText: 'Eksplorasi Labuan Bajo'
+  },
+  {
+    id: 3,
+    title: 'Kemegahan Candi Borobudur & Budaya Mataram',
+    location: 'Magelang & Yogyakarta, Jawa Tengah',
+    badge: 'Cagar Budaya Mahakarya',
+    description: 'Monumen candi Buddha terbesar di dunia di tengah balutan kabut fajar dan lanskap perbukitan Menoreh.',
+    image: 'https://images.unsplash.com/photo-1596402184320-417e7178b2cd?auto=format&fit=crop&w=1600&q=85',
+    ctaText: 'Kunjungi Borobudur'
+  },
+  {
+    id: 4,
+    title: 'Lautan Pasir & Mentari Pagi Gunung Bromo',
+    location: 'Tengger Semeru, Jawa Timur',
+    badge: 'Lanskap Vulkanik Epik',
+    description: 'Pemandangan matahari terbit spektakuler di atas kaldera purba dan kawah aktif Tengger.',
+    image: 'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1600&q=85',
+    ctaText: 'Jelajahi Bromo'
+  },
+  {
+    id: 5,
+    title: 'Keheningan Alam Terasering Ubud Bali',
+    location: 'Gianyar, Bali',
+    badge: 'Pusat Spiritualitas & Relaksasi',
+    description: 'Persawahan terasering hijau berundak, resor spa mewah, dan sentra kesenian tradisional Bali.',
+    image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1600&q=85',
+    ctaText: 'Temukan Resor Ubud'
+  },
+  {
+    id: 6,
+    title: 'Danau Vulkanik Terbesar Dunia di Danau Toba',
+    location: 'Parapat & Samosir, Sumatera Utara',
+    badge: 'Geopark Kaldera Raksasa',
+    description: 'Danau vulkanik luas berair sejuk dengan warisan budaya Batak Toba yang otentik dan memukau.',
+    image: 'https://images.unsplash.com/photo-1570789210967-2cac24afeb00?auto=format&fit=crop&w=1600&q=85',
+    ctaText: 'Eksplorasi Danau Toba'
+  }
+]
+
+async function loadHeroBanners() {
+  try {
+    const res = await fetch('http://localhost:8000/api/v1/banners')
+    const json = await res.json()
+    if (json && json.data && json.data.length > 0) {
+      heroBannersData = json.data
+    }
+  } catch (err) {
+    // Gunakan 6 data default jika API belum aktif
+  }
+  renderHeroSlider()
+}
+
+function renderHeroSlider() {
+  const track = document.getElementById('slider-track')
+  const dotsContainer = document.getElementById('slider-dots')
+  const counter = document.getElementById('slider-counter')
+  if (!track) return
+
+  track.innerHTML = heroBannersData.map((b, i) => `
+    <div class="slider-slide ${i === currentHeroSlide ? 'active' : ''}" style="background-image: url('${b.image}')">
+      <div class="slide-overlay"></div>
+      <div class="slide-content">
+        <div class="slide-meta">
+          <span class="slide-badge">${b.badge || 'Destinasi Unggulan'}</span>
+          <span class="slide-location">📍 ${b.location || 'Indonesia'}</span>
+        </div>
+        <h2 class="slide-title">${b.title}</h2>
+        <p class="slide-desc">${b.description || ''}</p>
+        <div class="slide-actions">
+          <a href="#destinations" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">✨ ${b.ctaText || 'Eksplorasi Destinasi'}</a>
+          <button class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.85rem;" onclick="selectDestination('${b.location?.split(',')?.[0]?.trim() || b.title}')">🏨 Cek Hotel Terdekat</button>
+        </div>
+      </div>
+    </div>
+  `).join('')
+
+  if (dotsContainer) {
+    dotsContainer.innerHTML = heroBannersData.map((_, i) => `
+      <button class="slider-dot ${i === currentHeroSlide ? 'active' : ''}" onclick="goToHeroSlide(${i})" aria-label="Slide ${i + 1}"></button>
+    `).join('')
+  }
+
+  if (counter) {
+    counter.textContent = `${String(currentHeroSlide + 1).padStart(2, '0')} / ${String(heroBannersData.length).padStart(2, '0')}`
+  }
+}
+
+function nextHeroSlide() {
+  if (heroBannersData.length === 0) return
+  currentHeroSlide = (currentHeroSlide + 1) % heroBannersData.length
+  renderHeroSlider()
+}
+
+function prevHeroSlide() {
+  if (heroBannersData.length === 0) return
+  currentHeroSlide = (currentHeroSlide - 1 + heroBannersData.length) % heroBannersData.length
+  renderHeroSlider()
+}
+
+function goToHeroSlide(idx) {
+  currentHeroSlide = idx
+  renderHeroSlider()
+}
+
 // Init On Page Load
 document.addEventListener('DOMContentLoaded', () => {
+  loadHeroBanners()
   loadDestinations()
   loadHotels()
   loadFlights()

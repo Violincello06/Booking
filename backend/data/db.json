@@ -15,19 +15,17 @@
             "password": "user123",
             "role": "user",
             "phone": "+6289876543210"
+        },
+        {
+            "id": 3,
+            "name": "Admin Baru",
+            "email": "adminbaru@violincello.com",
+            "password": "passwordBaru123",
+            "role": "admin",
+            "phone": "+628123456789"
         }
     ],
     "destinations": [
-        {
-            "id": 6,
-            "name": "Balinase",
-            "city": "Gilimanuk",
-            "country": "Indonesia",
-            "image": "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80",
-            "description": "Banyak Bule",
-            "rating": 4.8,
-            "badge": "Wisata Unggulan"
-        },
         {
             "id": 5,
             "name": "Kawah Colomadu",
@@ -218,14 +216,14 @@
     "blogs": [
         {
             "id": 8,
-            "title": "MyFutureWife",
-            "summary": "Wanita Tercantik Didunia",
-            "content": "Punya Mas Cello",
-            "category": "Cerita Petualang",
-            "author": "MasCello",
-            "readTime": "Unlimited",
-            "date": "26 Oct 2026",
-            "image": "http://localhost:8000/uploads/blog_1793049519_392.jpg"
+            "title": "ROBLOX GAME BAIK",
+            "summary": "ASFAFASDJKFHASDHJFASDJLKFASFASFAFADFAFAFA",
+            "content": "FAFAFAFAFABGABASDSDBSDBSDDBSBSBADDeB asv as Ff s vsvsvs",
+            "category": "Kuliner & Budaya",
+            "author": "Tim Redaksi Violincello",
+            "readTime": "4 menit baca",
+            "date": "29 Oct 2026",
+            "image": "http://localhost:8000/uploads/blog_1793257153_640.jpg"
         },
         {
             "id": 7,
@@ -302,6 +300,74 @@
                 "Kuliner Tradisional",
                 "Budaya"
             ]
+        }
+    ],
+    "banners": [
+        {
+            "id": 1,
+            "title": "Pesona Bahari Kepulauan Raja Ampat",
+            "location": "Waisai, Papua Barat Daya",
+            "badge": "Surga Bawah Laut",
+            "description": "Gugusan pulau karang zamrud dan terumbu karang dengan keanekaragaman hayati laut terkaya di dunia.",
+            "image": "https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?auto=format&fit=crop&w=1600&q=85",
+            "ctaText": "Jelajahi Raja Ampat",
+            "ctaLink": "#destinations",
+            "order": 1
+        },
+        {
+            "id": 2,
+            "title": "Keajaiban Alam Labuan Bajo & Komodo",
+            "location": "Manggarai Barat, Nusa Tenggara Timur",
+            "badge": "Warisan Dunia UNESCO",
+            "description": "Panorama perbukitan sabana tiga warna dan habitat asli kadal purba terbesar di muka bumi.",
+            "image": "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=1600&q=85",
+            "ctaText": "Eksplorasi Labuan Bajo",
+            "ctaLink": "#destinations",
+            "order": 2
+        },
+        {
+            "id": 3,
+            "title": "Kemegahan Candi Borobudur & Budaya Mataram",
+            "location": "Magelang & Yogyakarta, Jawa Tengah",
+            "badge": "Cagar Budaya Mahakarya",
+            "description": "Monumen candi Buddha terbesar di dunia di tengah balutan kabut fajar dan lanskap perbukitan Menoreh.",
+            "image": "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?auto=format&fit=crop&w=1600&q=85",
+            "ctaText": "Kunjungi Borobudur",
+            "ctaLink": "#destinations",
+            "order": 3
+        },
+        {
+            "id": 4,
+            "title": "Lautan Pasir & Mentari Pagi Gunung Bromo",
+            "location": "Tengger Semeru, Jawa Timur",
+            "badge": "Lanskap Vulkanik Epik",
+            "description": "Pemandangan matahari terbit spektakuler di atas kaldera purba dan kawah aktif Tengger.",
+            "image": "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1600&q=85",
+            "ctaText": "Jelajahi Bromo",
+            "ctaLink": "#destinations",
+            "order": 4
+        },
+        {
+            "id": 5,
+            "title": "Keheningan Alam Terasering Ubud Bali",
+            "location": "Gianyar, Bali",
+            "badge": "Pusat Spiritualitas & Relaksasi",
+            "description": "Persawahan terasering hijau berundak, resor spa mewah, dan sentra kesenian tradisional Bali.",
+            "image": "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1600&q=85",
+            "ctaText": "Temukan Resor Ubud",
+            "ctaLink": "#hotels",
+            "order": 5
+        },
+        {
+            "id": 6,
+            "title": "Danau Vulkanik Terbesar Dunia di Danau Toba",
+            "location": "Parapat & Samosir, Sumatera Utara",
+            "badge": "Geopark Kaldera Raksasa",
+            "description": "Danau vulkanik luas berair sejuk dengan warisan budaya Batak Toba yang otentik dan memukau.",
+            "image": "https://images.unsplash.com/photo-1570789210967-2cac24afeb00?auto=format&fit=crop&w=1600&q=85",
+            "ctaText": "Eksplorasi Danau Toba",
+            "ctaLink": "#destinations",
+            "order": 6
         }
     ]
 }

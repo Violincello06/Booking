@@ -177,6 +177,8 @@ Route::prefix('v1')->group(function () {
 use App\Http\Controllers\Api\OtaDataController;
 
 Route::post('/auth/login', [OtaDataController::class, 'login']);
+Route::post('/auth/register', [OtaDataController::class, 'register']);
+Route::post('/auth/forgot-password', [OtaDataController::class, 'forgotPassword']);
 Route::post('/upload', [OtaDataController::class, 'upload']);
 
 Route::prefix('admin')->group(function () {
@@ -206,5 +208,16 @@ Route::prefix('admin')->group(function () {
     Route::post('/blogs', [OtaDataController::class, 'storeBlog']);
     Route::put('/blogs/{id}', [OtaDataController::class, 'updateBlog']);
     Route::delete('/blogs/{id}', [OtaDataController::class, 'deleteBlog']);
+
+    // Banners (Hero Slider)
+    Route::get('/banners', [OtaDataController::class, 'getBanners']);
+    Route::post('/banners', [OtaDataController::class, 'storeBanner']);
+    Route::put('/banners/{id}', [OtaDataController::class, 'updateBanner']);
+    Route::delete('/banners/{id}', [OtaDataController::class, 'deleteBanner']);
 });
+
+// Public Hero Banners Endpoint
+Route::get('/banners', [OtaDataController::class, 'getBanners']);
+Route::get('/v1/banners', [OtaDataController::class, 'getBanners']);
+
 

@@ -517,41 +517,226 @@
       background: rgba(37, 99, 235, 0.05);
     }
 
-    /* Login Screen */
+    /* Authentication & Security Screen */
     .login-container {
-      max-width: 400px;
-      margin: 5rem auto;
+      max-width: 440px;
+      margin: 3.5rem auto;
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 2rem;
+      border-radius: 16px;
+      padding: 2.25rem;
+      box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      position: relative;
+    }
+
+    .auth-tabs {
+      display: flex;
+      gap: 0.35rem;
+      margin-bottom: 1.5rem;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.3rem;
+      border-radius: 10px;
+    }
+
+    .auth-tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.5rem 0.25rem;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
       text-align: center;
+    }
+
+    .auth-tab-btn.active {
+      background: #2563eb;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+    }
+
+    .auth-link {
+      color: #60a5fa;
+      text-decoration: none;
+      font-size: 0.825rem;
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+
+    .auth-link:hover {
+      color: #93c5fd;
+      text-decoration: underline;
+    }
+
+    .password-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-wrapper .form-input {
+      padding-right: 2.75rem;
+    }
+
+    .password-toggle-btn {
+      position: absolute;
+      right: 0.75rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .password-toggle-btn:hover {
+      color: #fff;
+    }
+
+    .auth-alert {
+      padding: 0.65rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.825rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .auth-alert.error {
+      display: block;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #f87171;
+    }
+
+    .auth-alert.success {
+      display: block;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #34d399;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- 1. LOGIN SCREEN -->
-  <div id="login-view" class="login-container" style="display: none;">
-    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎻</div>
-    <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; margin-bottom: 0.3rem;">Manajemen Sistem OTA</h2>
-    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">Masuk dengan akun staf atau
-      administrator</p>
+  <!-- 1. AUTHENTICATION & SECURITY SCREEN (LOGIN / REGISTER / FORGOT PASSWORD) -->
+  <div id="login-view" class="login-container">
+    <div style="font-size: 2.25rem; margin-bottom: 0.4rem; text-align: center;">🎻</div>
+    <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.35rem; margin-bottom: 0.25rem; text-align: center;">Portal Manajemen Sistem</h2>
+    <p style="color: var(--text-muted); font-size: 0.825rem; margin-bottom: 1.25rem; text-align: center;">Violincello OTA Travel Booking Engine</p>
 
-    <div style="text-align: left;" class="form-group">
-      <label class="form-label">Email Administrator</label>
-      <input type="email" id="login-email" class="form-input" value="admin@violincello.com">
-    </div>
-    <div style="text-align: left;" class="form-group">
-      <label class="form-label">Kata Sandi</label>
-      <input type="password" id="login-password" class="form-input" value="admin123">
+    <!-- Nav Tab Auth -->
+    <div class="auth-tabs">
+      <button class="auth-tab-btn active" id="tab-auth-login" onclick="showAuthTab('login')">Masuk</button>
+      <button class="auth-tab-btn" id="tab-auth-register" onclick="showAuthTab('register')">Buat Akun</button>
+      <button class="auth-tab-btn" id="tab-auth-forgot" onclick="showAuthTab('forgot')">Lupa Sandi</button>
     </div>
 
-    <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;"
-      onclick="handleLogin()">
-      Masuk ke Manajemen Sistem
-    </button>
+    <!-- Alert Message Box -->
+    <div id="auth-alert" class="auth-alert"></div>
+
+    <!-- FORM 1: LOGIN -->
+    <div id="form-auth-login">
+      <div class="form-group" style="text-align: left;">
+        <label class="form-label" for="login-email">Email Akun Administrator</label>
+        <input type="email" id="login-email" class="form-input" placeholder="admin@violincello.com" autocomplete="email">
+      </div>
+      <div class="form-group" style="text-align: left;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+          <label class="form-label" for="login-password" style="margin-bottom: 0;">Kata Sandi</label>
+          <a class="auth-link" onclick="showAuthTab('forgot')">Lupa Sandi?</a>
+        </div>
+        <div class="password-wrapper">
+          <input type="password" id="login-password" class="form-input" placeholder="Masukkan kata sandi..." autocomplete="current-password">
+          <button type="button" class="password-toggle-btn" onclick="togglePassword('login-password', this)" title="Lihat kata sandi">👁️</button>
+        </div>
+      </div>
+      <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 0.75rem;" onclick="handleLogin()" id="btn-submit-login">
+        🔐 Masuk ke Portal Admin
+      </button>
+      <div style="text-align: center; margin-top: 1.25rem; font-size: 0.825rem; color: var(--text-muted);">
+        Belum punya akun admin? <a class="auth-link" onclick="showAuthTab('register')">Buat Akun Baru</a>
+      </div>
+    </div>
+
+    <!-- FORM 2: BUAT AKUN (REGISTER) -->
+    <div id="form-auth-register" style="display: none;">
+      <div class="form-group" style="text-align: left;">
+        <label class="form-label" for="reg-name">Nama Lengkap Pengelola</label>
+        <input type="text" id="reg-name" class="form-input" placeholder="Contoh: Budi Santoso" autocomplete="name">
+      </div>
+      <div class="form-group" style="text-align: left;">
+        <label class="form-label" for="reg-email">Email Kantor / Pribadi</label>
+        <input type="email" id="reg-email" class="form-input" placeholder="budi@violincello.com" autocomplete="email">
+      </div>
+      <div class="form-group" style="text-align: left;">
+        <label class="form-label" for="reg-phone">Nomor Telepon / WhatsApp</label>
+        <input type="tel" id="reg-phone" class="form-input" placeholder="081234567890" autocomplete="tel">
+      </div>
+      <div class="form-group" style="text-align: left;">
+        <label class="form-label" for="reg-role">Peran Akun (Role)</label>
+        <select id="reg-role" class="form-input">
+          <option value="admin">Administrator (Akses Penuh)</option>
+          <option value="staff">Staf Operasional</option>
+        </select>
+      </div>
+      <div class="form-group" style="text-align: left;">
+        <label class="form-label" for="reg-password">Kata Sandi Baru (Min. 6 Karakter)</label>
+        <div class="password-wrapper">
+          <input type="password" id="reg-password" class="form-input" placeholder="Buat kata sandi..." autocomplete="new-password">
+          <button type="button" class="password-toggle-btn" onclick="togglePassword('reg-password', this)" title="Lihat kata sandi">👁️</button>
+        </div>
+      </div>
+      <div class="form-group" style="text-align: left;">
+        <label class="form-label" for="reg-password-confirm">Konfirmasi Kata Sandi</label>
+        <div class="password-wrapper">
+          <input type="password" id="reg-password-confirm" class="form-input" placeholder="Ketik ulang kata sandi..." autocomplete="new-password">
+          <button type="button" class="password-toggle-btn" onclick="togglePassword('reg-password-confirm', this)" title="Lihat kata sandi">👁️</button>
+        </div>
+      </div>
+      <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 0.75rem;" onclick="handleRegister()" id="btn-submit-register">
+        ✨ Buat Akun & Masuk
+      </button>
+      <div style="text-align: center; margin-top: 1.25rem; font-size: 0.825rem; color: var(--text-muted);">
+        Sudah memiliki akun pengelola? <a class="auth-link" onclick="showAuthTab('login')">Masuk di sini</a>
+      </div>
+    </div>
+
+    <!-- FORM 3: LUPA PASSWORD (RESET) -->
+    <div id="form-auth-forgot" style="display: none;">
+      <div class="form-group" style="text-align: left;">
+        <label class="form-label" for="forgot-email">Email Terdaftar</label>
+        <input type="email" id="forgot-email" class="form-input" placeholder="admin@violincello.com" autocomplete="email">
+        <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem;">Masukkan alamat email akun yang ingin dipulihkan.</div>
+      </div>
+      <div class="form-group" style="text-align: left;">
+        <label class="form-label" for="forgot-password">Kata Sandi Baru</label>
+        <div class="password-wrapper">
+          <input type="password" id="forgot-password" class="form-input" placeholder="Masukkan kata sandi baru..." autocomplete="new-password">
+          <button type="button" class="password-toggle-btn" onclick="togglePassword('forgot-password', this)" title="Lihat kata sandi">👁️</button>
+        </div>
+      </div>
+      <div class="form-group" style="text-align: left;">
+        <label class="form-label" for="forgot-password-confirm">Konfirmasi Kata Sandi Baru</label>
+        <div class="password-wrapper">
+          <input type="password" id="forgot-password-confirm" class="form-input" placeholder="Ketik ulang kata sandi baru..." autocomplete="new-password">
+          <button type="button" class="password-toggle-btn" onclick="togglePassword('forgot-password-confirm', this)" title="Lihat kata sandi">👁️</button>
+        </div>
+      </div>
+      <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 0.75rem;" onclick="handleForgotPassword()" id="btn-submit-forgot">
+        🔄 Perbarui Kata Sandi
+      </button>
+      <div style="text-align: center; margin-top: 1.25rem; font-size: 0.825rem; color: var(--text-muted);">
+        Ingat kata sandi akun? <a class="auth-link" onclick="showAuthTab('login')">Kembali ke Login</a>
+      </div>
+    </div>
   </div>
 
   <!-- 2. MAIN ADMIN DASHBOARD -->
@@ -561,13 +746,16 @@
         <div class="brand-icon">🎻</div>
         <div>
           <div class="brand-title">Violincello <span class="badge-admin">Admin</span></div>
-          <p style="font-size: 0.75rem; color: var(--text-muted);">Sistem Pengelolaan Destinasi, Hotel, Penerbangan, dan
-            Blog</p>
+          <p style="font-size: 0.75rem; color: var(--text-muted);">Sistem Pengelolaan Destinasi, Hotel, Penerbangan, dan Blog</p>
         </div>
       </div>
-      <div style="display: flex; gap: 0.75rem;">
+      <div style="display: flex; gap: 0.75rem; align-items: center;">
+        <div style="text-align: right; margin-right: 0.25rem;">
+          <div id="auth-user-display" style="font-size: 0.825rem; font-weight: 600; color: #fff;">Administrator</div>
+          <div id="auth-role-display" style="font-size: 0.7rem; color: #60a5fa; text-transform: uppercase;">ADMIN</div>
+        </div>
         <a href="http://localhost:3000" target="_blank" class="btn btn-outline">
-          Tes landing Page
+          Tes Landing Page
         </a>
         <button class="btn btn-danger" onclick="handleLogout()">Keluar</button>
       </div>
@@ -590,6 +778,10 @@
       <div class="kpi-box">
         <div class="kpi-label">Artikel Blog Terbit</div>
         <div class="kpi-num" id="kpi-blogs">0</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-label">Hero Banner Slide</div>
+        <div class="kpi-num" id="kpi-banners">0</div>
       </div>
     </div>
 
@@ -644,6 +836,11 @@
         <span class="nav-icon">📝</span>
         <span class="nav-text">Data Blog & Artikel</span>
         <span class="nav-badge" id="badge-count-blog">0</span>
+      </button>
+      <button class="nav-item" id="tab-btn-banner" onclick="switchTab('banner')">
+        <span class="nav-icon">🖼️</span>
+        <span class="nav-text">Banner Hero Slider</span>
+        <span class="nav-badge" id="badge-count-banner">0</span>
       </button>
     </nav>
 
@@ -748,6 +945,31 @@
         <tbody id="table-blog"></tbody>
       </table>
     </div>
+
+    <!-- TAB 5: BANNER HERO SLIDER -->
+    <div id="tab-banner" class="panel" style="display: none;">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Pengelolaan Hero Banner Slider Landing Page</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Kelola foto dan informasi slide destinasi yang ditampilkan pada banner hero bergulir halaman utama</p>
+        </div>
+        <button class="btn btn-primary" onclick="openBannerModal()">+ Tambah Banner Slide</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 70px;">Urutan</th>
+            <th style="width: 100px;">Foto</th>
+            <th>Judul Banner</th>
+            <th>Lokasi & Wilayah</th>
+            <th>Badge</th>
+            <th>Deskripsi</th>
+            <th style="width: 130px;">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="table-banner"></tbody>
+      </table>
+    </div>
   </div>
 
   <!-- MODAL FORM CONTAINER -->
@@ -757,49 +979,241 @@
 
   <script>
     const API_BASE = (window.location.origin || 'http://localhost:8000') + '/api'
-    let token = localStorage.getItem('violincello_backend_token') || 'violincello-admin-token-2026'
+    // WAJIB LOGIN: Tidak ada token hardcoded default agar sistem terkunci secara aman
+    let token = localStorage.getItem('violincello_backend_token') || ''
+    let currentUser = null
+    try {
+      currentUser = JSON.parse(localStorage.getItem('violincello_backend_user') || 'null')
+    } catch (e) {
+      currentUser = null
+    }
+
     let allDestinations = []
     let allHotels = []
     let allFlights = []
     let allBlogs = []
+    let allBanners = []
 
     function checkAuth() {
+      const loginView = document.getElementById('login-view')
+      const adminView = document.getElementById('admin-view')
+
       if (token) {
-        document.getElementById('login-view').style.display = 'none'
-        document.getElementById('admin-view').style.display = 'block'
+        loginView.style.display = 'none'
+        adminView.style.display = 'block'
+        
+        // Tampilkan profil pengguna yang sedang login
+        if (currentUser) {
+          const nameEl = document.getElementById('auth-user-display')
+          const roleEl = document.getElementById('auth-role-display')
+          if (nameEl) nameEl.textContent = currentUser.name || 'Administrator'
+          if (roleEl) roleEl.textContent = (currentUser.role || 'ADMIN').toUpperCase()
+        }
+        
         loadAllData()
       } else {
-        document.getElementById('login-view').style.display = 'block'
-        document.getElementById('admin-view').style.display = 'none'
+        loginView.style.display = 'block'
+        adminView.style.display = 'none'
+        showAuthTab('login')
       }
     }
 
+    // Navigasi Tab Layar Auth: Login, Register, Lupa Password
+    function showAuthTab(mode) {
+      document.getElementById('form-auth-login').style.display = mode === 'login' ? 'block' : 'none'
+      document.getElementById('form-auth-register').style.display = mode === 'register' ? 'block' : 'none'
+      document.getElementById('form-auth-forgot').style.display = mode === 'forgot' ? 'block' : 'none'
+
+      document.getElementById('tab-auth-login').classList.toggle('active', mode === 'login')
+      document.getElementById('tab-auth-register').classList.toggle('active', mode === 'register')
+      document.getElementById('tab-auth-forgot').classList.toggle('active', mode === 'forgot')
+
+      hideAuthAlert()
+    }
+
+    function showAuthAlert(message, type = 'error') {
+      const box = document.getElementById('auth-alert')
+      if (!box) return
+      box.textContent = message
+      box.className = `auth-alert ${type}`
+      box.style.display = 'block'
+    }
+
+    function hideAuthAlert() {
+      const box = document.getElementById('auth-alert')
+      if (box) box.style.display = 'none'
+    }
+
+    function togglePassword(inputId, btn) {
+      const input = document.getElementById(inputId)
+      if (!input) return
+      if (input.type === 'password') {
+        input.type = 'text'
+        btn.textContent = '🔒'
+        btn.title = 'Sembunyikan kata sandi'
+      } else {
+        input.type = 'password'
+        btn.textContent = '👁️'
+        btn.title = 'Lihat kata sandi'
+      }
+    }
+
+    // 1. PROSES LOGIN
     async function handleLogin() {
-      const email = document.getElementById('login-email').value
+      hideAuthAlert()
+      const email = document.getElementById('login-email').value.trim()
       const password = document.getElementById('login-password').value
+      const btn = document.getElementById('btn-submit-login')
+
+      if (!email || !password) {
+        showAuthAlert('Harap isi alamat email dan kata sandi Anda.', 'error')
+        return
+      }
+
+      btn.disabled = true
+      btn.textContent = 'Memverifikasi...'
+
       try {
         const res = await fetch(`${API_BASE}/auth/login`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify({ email, password })
         })
         const data = await res.json()
-        if (data.success && data.data.user.role === 'admin') {
+
+        if (data.success && data.data && data.data.token) {
           token = data.data.token
+          currentUser = data.data.user
           localStorage.setItem('violincello_backend_token', token)
+          localStorage.setItem('violincello_backend_user', JSON.stringify(currentUser))
           checkAuth()
         } else {
-          alert(data.message || 'Hanya akun admin yang diizinkan mengakses manajemen.')
+          showAuthAlert(data.message || 'Kombinasi email atau kata sandi tidak cocok.', 'error')
         }
       } catch (err) {
-        alert('Gagal menghubungi backend server: ' + err.message)
+        showAuthAlert('Gagal menghubungi backend server: ' + err.message, 'error')
+      } finally {
+        btn.disabled = false
+        btn.textContent = '🔐 Masuk ke Portal Admin'
       }
     }
 
+    // 2. PROSES BUAT AKUN (REGISTER)
+    async function handleRegister() {
+      hideAuthAlert()
+      const name = document.getElementById('reg-name').value.trim()
+      const email = document.getElementById('reg-email').value.trim()
+      const phone = document.getElementById('reg-phone').value.trim()
+      const role = document.getElementById('reg-role').value
+      const password = document.getElementById('reg-password').value
+      const confirmPassword = document.getElementById('reg-password-confirm').value
+      const btn = document.getElementById('btn-submit-register')
+
+      if (!name || !email || !password) {
+        showAuthAlert('Nama, email, dan kata sandi wajib diisi.', 'error')
+        return
+      }
+
+      if (password.length < 6) {
+        showAuthAlert('Kata sandi harus minimal 6 karakter.', 'error')
+        return
+      }
+
+      if (password !== confirmPassword) {
+        showAuthAlert('Konfirmasi kata sandi tidak cocok dengan kata sandi baru.', 'error')
+        return
+      }
+
+      btn.disabled = true
+      btn.textContent = 'Mendaftarkan Akun...'
+
+      try {
+        const res = await fetch(`${API_BASE}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ name, email, phone, role, password })
+        })
+        const data = await res.json()
+
+        if (data.success && data.data && data.data.token) {
+          token = data.data.token
+          currentUser = data.data.user
+          localStorage.setItem('violincello_backend_token', token)
+          localStorage.setItem('violincello_backend_user', JSON.stringify(currentUser))
+          alert('Akun berhasil didaftarkan! Selamat datang di Portal Manajemen.')
+          checkAuth()
+        } else {
+          showAuthAlert(data.message || 'Gagal membuat akun.', 'error')
+        }
+      } catch (err) {
+        showAuthAlert('Terjadi kesalahan jaringan: ' + err.message, 'error')
+      } finally {
+        btn.disabled = false
+        btn.textContent = '✨ Buat Akun & Masuk'
+      }
+    }
+
+    // 3. PROSES LUPA KATA SANDI (FORGOT / RESET PASSWORD)
+    async function handleForgotPassword() {
+      hideAuthAlert()
+      const email = document.getElementById('forgot-email').value.trim()
+      const password = document.getElementById('forgot-password').value
+      const confirmPassword = document.getElementById('forgot-password-confirm').value
+      const btn = document.getElementById('btn-submit-forgot')
+
+      if (!email || !password) {
+        showAuthAlert('Alamat email dan kata sandi baru wajib diisi.', 'error')
+        return
+      }
+
+      if (password.length < 6) {
+        showAuthAlert('Kata sandi baru harus minimal 6 karakter.', 'error')
+        return
+      }
+
+      if (password !== confirmPassword) {
+        showAuthAlert('Konfirmasi kata sandi tidak cocok dengan kata sandi baru.', 'error')
+        return
+      }
+
+      btn.disabled = true
+      btn.textContent = 'Memperbarui...'
+
+      try {
+        const res = await fetch(`${API_BASE}/auth/forgot-password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ email, password })
+        })
+        const data = await res.json()
+
+        if (data.success) {
+          alert(data.message || 'Kata sandi berhasil diperbarui! Silakan masuk dengan kata sandi baru Anda.')
+          // Prefill email ke form login dan pindah ke tab login
+          document.getElementById('login-email').value = email
+          document.getElementById('login-password').value = password
+          showAuthTab('login')
+          showAuthAlert('Kata sandi telah diperbarui. Silakan klik "Masuk ke Portal Admin".', 'success')
+        } else {
+          showAuthAlert(data.message || 'Email tidak ditemukan.', 'error')
+        }
+      } catch (err) {
+        showAuthAlert('Terjadi kesalahan jaringan: ' + err.message, 'error')
+      } finally {
+        btn.disabled = false
+        btn.textContent = '🔄 Perbarui Kata Sandi'
+      }
+    }
+
+    // 4. PROSES LOGOUT (KUNCI KEMBALI PORTAL)
     function handleLogout() {
-      token = ''
-      localStorage.removeItem('violincello_backend_token')
-      checkAuth()
+      if (confirm('Apakah Anda yakin ingin keluar dari Portal Manajemen Sistem?')) {
+        token = ''
+        currentUser = null
+        localStorage.removeItem('violincello_backend_token')
+        localStorage.removeItem('violincello_backend_user')
+        checkAuth()
+      }
     }
 
     function switchTab(tab) {
@@ -807,22 +1221,25 @@
       document.getElementById('tab-hotel').style.display = tab === 'hotel' ? 'block' : 'none'
       document.getElementById('tab-flight').style.display = tab === 'flight' ? 'block' : 'none'
       document.getElementById('tab-blog').style.display = tab === 'blog' ? 'block' : 'none'
+      document.getElementById('tab-banner').style.display = tab === 'banner' ? 'block' : 'none'
 
       document.getElementById('tab-btn-dest').classList.toggle('active', tab === 'dest')
       document.getElementById('tab-btn-hotel').classList.toggle('active', tab === 'hotel')
       document.getElementById('tab-btn-flight').classList.toggle('active', tab === 'flight')
       document.getElementById('tab-btn-blog').classList.toggle('active', tab === 'blog')
+      document.getElementById('tab-btn-banner').classList.toggle('active', tab === 'banner')
     }
 
     async function loadAllData() {
       const headers = { 'Authorization': `Bearer ${token}` }
       try {
-        const [dashRes, destRes, hotelRes, flightRes, blogRes] = await Promise.all([
+        const [dashRes, destRes, hotelRes, flightRes, blogRes, bannerRes] = await Promise.all([
           fetch(`${API_BASE}/admin/dashboard`, { headers }),
           fetch(`${API_BASE}/admin/destinations`, { headers }),
           fetch(`${API_BASE}/admin/hotels`, { headers }),
           fetch(`${API_BASE}/admin/flights`, { headers }),
-          fetch(`${API_BASE}/admin/blogs`, { headers })
+          fetch(`${API_BASE}/admin/blogs`, { headers }),
+          fetch(`${API_BASE}/admin/banners`, { headers })
         ])
 
         const dash = await dashRes.json()
@@ -830,28 +1247,35 @@
         const hotels = await hotelRes.json()
         const flights = await flightRes.json()
         const blogs = await blogRes.json()
+        const banners = await bannerRes.json()
 
         allDestinations = dest.data || []
         allHotels = hotels.data || []
         allFlights = flights.data || []
         allBlogs = blogs.data || []
+        allBanners = banners.data || []
 
         if (dash.success) {
           document.getElementById('kpi-dest').textContent = dash.data.totalDestinations
           document.getElementById('kpi-hotels').textContent = dash.data.totalHotels
           document.getElementById('kpi-flights').textContent = dash.data.totalFlights
           document.getElementById('kpi-blogs').textContent = dash.data.totalBlogs || allBlogs.length
+          const kpiBanner = document.getElementById('kpi-banners')
+          if (kpiBanner) kpiBanner.textContent = allBanners.length
         }
 
         document.getElementById('badge-count-dest').textContent = allDestinations.length
         document.getElementById('badge-count-hotel').textContent = allHotels.length
         document.getElementById('badge-count-flight').textContent = allFlights.length
         document.getElementById('badge-count-blog').textContent = allBlogs.length
+        const badgeBanner = document.getElementById('badge-count-banner')
+        if (badgeBanner) badgeBanner.textContent = allBanners.length
 
         renderDest(allDestinations)
         renderHotels(allHotels)
         renderFlights(allFlights)
         renderBlogs(allBlogs)
+        renderBanners(allBanners)
         renderChart()
       } catch (err) {
         console.error('Error fetching admin data:', err)
@@ -1122,6 +1546,37 @@
             <div style="display: flex; gap: 0.35rem;">
               <button class="btn btn-warning btn-sm" onclick="openBlogModal(${b.id})">Edit</button>
               <button class="btn btn-danger btn-sm" onclick="deleteItem('blogs', ${b.id})">Hapus</button>
+            </div>
+          </td>
+        </tr>
+      `).join('')
+    }
+
+    function renderBanners(items) {
+      const tbody = document.getElementById('table-banner')
+      if (!tbody) return
+      if (items.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">Belum ada slide banner. Klik "+ Tambah Banner Slide" untuk menambahkan.</td></tr>`
+        return
+      }
+      tbody.innerHTML = items.map((b, idx) => `
+        <tr>
+          <td style="font-weight: 700; color: #60a5fa; text-align: center;">${b.order || (idx + 1)}</td>
+          <td><img src="${b.image}" class="thumb" alt="${b.title}" style="width: 80px; height: 50px; object-fit: cover; border-radius: 6px;"></td>
+          <td>
+            <div style="font-weight: 600; color: #fff;">${b.title}</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">📍 ${b.location || 'Indonesia'}</div>
+          </td>
+          <td><span class="status-badge blue">${b.badge || 'Destinasi'}</span></td>
+          <td>
+            <div style="font-size: 0.8rem; color: var(--text-muted); max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              ${b.description || '-'}
+            </div>
+          </td>
+          <td>
+            <div style="display: flex; gap: 0.35rem;">
+              <button class="btn btn-warning btn-sm" onclick="openBannerModal(${b.id})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteItem('banners', ${b.id})">Hapus</button>
             </div>
           </td>
         </tr>
@@ -1576,6 +2031,101 @@
         }
       } catch (err) {
         alert('Terjadi kesalahan saat menyimpan artikel: ' + err.message)
+      }
+    }
+
+    // --- MODAL HERO BANNER ---
+    function openBannerModal(id = null) {
+      const item = id ? allBanners.find(b => b.id === id) : null
+      const isEdit = !!item
+      const modal = document.getElementById('modal-body')
+      modal.innerHTML = `
+        <div class="modal-title">${isEdit ? 'Edit Hero Banner Slide' : 'Tambah Hero Banner Slide Baru'}</div>
+        <div class="form-group">
+          <label class="form-label">Judul Banner Destinasi</label>
+          <input type="text" id="m-ban-title" class="form-input" placeholder="Contoh: Pesona Bahari Kepulauan Raja Ampat" value="${isEdit ? escapeHtml(item.title) : ''}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Lokasi / Wilayah</label>
+          <input type="text" id="m-ban-location" class="form-input" placeholder="Contoh: Waisai, Papua Barat Daya" value="${isEdit ? escapeHtml(item.location || '') : ''}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Badge / Tag Highlight</label>
+          <input type="text" id="m-ban-badge" class="form-input" placeholder="Contoh: Surga Bawah Laut, Warisan UNESCO" value="${isEdit ? escapeHtml(item.badge || '') : 'Destinasi Prioritas'}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">URL Foto / Background Destinasi</label>
+          <input type="url" id="m-ban-img" class="form-input" placeholder="https://images.unsplash.com/..." value="${isEdit ? escapeHtml(item.image) : 'https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?auto=format&fit=crop&w=1600&q=85'}">
+          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem;">Gunakan URL gambar beresolusi tinggi (disarankan rasio lanskap 16:9 atau 16:7).</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Deskripsi Singkat</label>
+          <textarea id="m-ban-desc" class="form-input" rows="2" placeholder="Uraian daya tarik keindahan destinasi...">${isEdit ? escapeHtml(item.description || '') : ''}</textarea>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label class="form-label">Teks Tombol Aksi</label>
+            <input type="text" id="m-ban-cta" class="form-input" placeholder="Contoh: Jelajahi Destinasi" value="${isEdit ? escapeHtml(item.ctaText || '') : 'Eksplorasi Destinasi'}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Urutan Tampil (Order)</label>
+            <input type="number" id="m-ban-order" class="form-input" min="1" max="50" value="${isEdit ? (item.order || 1) : (allBanners.length + 1)}">
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-outline" onclick="closeModal()">Batal</button>
+          <button class="btn btn-primary" onclick="submitBanner(${isEdit ? item.id : 'null'})">
+            ${isEdit ? 'Perbarui Slide' : 'Simpan Slide'}
+          </button>
+        </div>
+      `
+      document.getElementById('modal-container').style.display = 'flex'
+    }
+
+    async function submitBanner(editId = null) {
+      const title = document.getElementById('m-ban-title').value.trim()
+      const location = document.getElementById('m-ban-location').value.trim()
+      const badge = document.getElementById('m-ban-badge').value.trim()
+      const image = document.getElementById('m-ban-img').value.trim()
+      const description = document.getElementById('m-ban-desc').value.trim()
+      const ctaText = document.getElementById('m-ban-cta').value.trim()
+      const order = Number(document.getElementById('m-ban-order').value) || 1
+
+      if (!title || !image) {
+        return alert('Judul banner dan URL gambar wajib diisi!')
+      }
+
+      const method = editId ? 'PUT' : 'POST'
+      const url = editId ? `${API_BASE}/admin/banners/${editId}` : `${API_BASE}/admin/banners`
+
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ title, location, badge, image, description, ctaText, ctaLink: '#destinations', order })
+        })
+
+        const text = await res.text()
+        let json
+        try {
+          json = JSON.parse(text)
+        } catch (e) {
+          const cleanText = text.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+          throw new Error(cleanText.substring(0, 180) || 'Respon server tidak valid')
+        }
+
+        if (json.success) {
+          closeModal()
+          loadAllData()
+        } else {
+          alert('Gagal menyimpan banner: ' + (json.message || 'Terjadi kesalahan'))
+        }
+      } catch (err) {
+        alert('Terjadi kesalahan saat menyimpan banner: ' + err.message)
       }
     }
 

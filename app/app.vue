@@ -9,7 +9,7 @@
           </div>
           <div>
             <h2 class="brand-title">CelloTrav <span class="text-gradient">Experience</span></h2>
-            <p class="brand-subtitle">CelloTrav - Platform Reservasi Hotel & Tiket Pesawat Nusantara</p>
+            <p class="brand-subtitle">Platform Reservasi Hotel & Tiket Pesawat</p>
           </div>
         </div>
 
@@ -49,7 +49,7 @@
           </div>
 
           <!-- Action Button Khusus Pengguna / Customer -->
-          <a href="#search" class="btn btn-primary" id="btn-user-booking" title="Mulai Eksplorasi & Reservasi">
+          <a href="#search" class="btn btn-primary btn-nav-cta" id="btn-user-booking" title="Mulai Eksplorasi & Reservasi">
             <span>✨</span> Rencanakan Liburan
           </a>
         </div>
@@ -68,6 +68,80 @@
           Temukan destinasi eksotis Nusantara, akomodasi hotel berbintang terverifikasi, dan jadwal penerbangan langsung dengan tarif transparan tanpa biaya tersembunyi.
         </p>
       </div>
+
+      <!-- 2.1 HERO BANNER CAROUSEL SLIDER (6 Destinasi Unggulan Nusantara) -->
+      <section class="hero-banner-slider" aria-label="Banner Galeri Destinasi Nusantara">
+        <div class="slider-container glass-panel">
+          <!-- Slide items -->
+          <div 
+            v-for="(banner, index) in heroBanners" 
+            :key="banner.id || index"
+            class="slider-slide"
+            :class="{ active: currentSlide === index }"
+            :style="{ backgroundImage: `url(${banner.image})` }"
+          >
+            <!-- Cinematic Dark Gradient Overlay for contrast -->
+            <div class="slide-overlay"></div>
+
+            <div class="slide-content">
+              <div class="slide-meta">
+                <span class="slide-badge">{{ banner.badge || 'Destinasi Unggulan' }}</span>
+                <span class="slide-location">📍 {{ banner.location || 'Indonesia' }}</span>
+              </div>
+              <h2 class="slide-title">{{ banner.title }}</h2>
+              <p class="slide-desc">{{ banner.description }}</p>
+              <div class="slide-actions">
+                <a :href="banner.ctaLink || '#destinations'" class="btn btn-primary btn-sm btn-slide">
+                  <span>✨</span> {{ banner.ctaText || 'Eksplorasi Destinasi' }}
+                </a>
+                <button 
+                  @click="quickFilterDestination({ city: banner.location?.split(',')?.[0]?.trim() || banner.title, name: banner.title })" 
+                  class="btn btn-glass btn-sm btn-slide-alt"
+                >
+                  <span>🏨</span> Cek Hotel Terdekat
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Manual Navigation Buttons: Kiri (Sebelumnya) & Kanan (Selanjutnya) -->
+          <button 
+            class="slider-btn slider-btn-prev" 
+            @click="prevSlide" 
+            aria-label="Slide sebelumnya"
+            title="Slide sebelumnya"
+          >
+            ‹
+          </button>
+          <button 
+            class="slider-btn slider-btn-next" 
+            @click="nextSlide" 
+            aria-label="Slide selanjutnya"
+            title="Slide selanjutnya"
+          >
+            ›
+          </button>
+
+          <!-- Bottom Indicators & Counter -->
+          <div class="slider-footer">
+            <div class="slider-counter">
+              <span class="current-num">{{ String(currentSlide + 1).padStart(2, '0') }}</span>
+              <span class="sep">/</span>
+              <span class="total-num">{{ String(heroBanners.length).padStart(2, '0') }}</span>
+            </div>
+            <div class="slider-dots">
+              <button 
+                v-for="(banner, idx) in heroBanners" 
+                :key="'dot-' + idx"
+                class="slider-dot"
+                :class="{ active: currentSlide === idx }"
+                @click="goToSlide(idx)"
+                :aria-label="`Menuju slide ${idx + 1}`"
+              ></button>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <!-- Real-Time Search Widget -->
       <section class="search-widget glass-panel" id="search">
@@ -550,6 +624,103 @@ function openBlogDetail(blog) {
   showBlogModal.value = true
 }
 
+// Hero Banner State (Default 6 slides with reactive backend sync)
+const currentSlide = ref(0)
+const defaultBanners = [
+  {
+    id: 1,
+    title: 'Pesona Bahari Kepulauan Raja Ampat',
+    location: 'Waisai, Papua Barat Daya',
+    badge: 'Surga Bawah Laut',
+    description: 'Gugusan pulau karang zamrud dan terumbu karang dengan keanekaragaman hayati laut terkaya di dunia.',
+    image: 'https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?auto=format&fit=crop&w=1600&q=85',
+    ctaText: 'Jelajahi Raja Ampat',
+    ctaLink: '#destinations',
+    order: 1
+  },
+  {
+    id: 2,
+    title: 'Keajaiban Alam Labuan Bajo & Komodo',
+    location: 'Manggarai Barat, Nusa Tenggara Timur',
+    badge: 'Warisan Dunia UNESCO',
+    description: 'Panorama perbukitan sabana tiga warna dan habitat asli kadal purba terbesar di muka bumi.',
+    image: 'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=1600&q=85',
+    ctaText: 'Eksplorasi Labuan Bajo',
+    ctaLink: '#destinations',
+    order: 2
+  },
+  {
+    id: 3,
+    title: 'Kemegahan Candi Borobudur & Budaya Mataram',
+    location: 'Magelang & Yogyakarta, Jawa Tengah',
+    badge: 'Cagar Budaya Mahakarya',
+    description: 'Monumen candi Buddha terbesar di dunia di tengah balutan kabut fajar dan lanskap perbukitan Menoreh.',
+    image: 'https://images.unsplash.com/photo-1596402184320-417e7178b2cd?auto=format&fit=crop&w=1600&q=85',
+    ctaText: 'Kunjungi Borobudur',
+    ctaLink: '#destinations',
+    order: 3
+  },
+  {
+    id: 4,
+    title: 'Lautan Pasir & Mentari Pagi Gunung Bromo',
+    location: 'Tengger Semeru, Jawa Timur',
+    badge: 'Lanskap Vulkanik Epik',
+    description: 'Pemandangan matahari terbit spektakuler di atas kaldera purba dan kawah aktif Tengger.',
+    image: 'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1600&q=85',
+    ctaText: 'Jelajahi Bromo',
+    ctaLink: '#destinations',
+    order: 4
+  },
+  {
+    id: 5,
+    title: 'Keheningan Alam Terasering Ubud Bali',
+    location: 'Gianyar, Bali',
+    badge: 'Pusat Spiritualitas & Relaksasi',
+    description: 'Persawahan terasering hijau berundak, resor spa mewah, dan sentra kesenian tradisional Bali.',
+    image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1600&q=85',
+    ctaText: 'Temukan Resor Ubud',
+    ctaLink: '#hotels',
+    order: 5
+  },
+  {
+    id: 6,
+    title: 'Danau Vulkanik Terbesar Dunia di Danau Toba',
+    location: 'Parapat & Samosir, Sumatera Utara',
+    badge: 'Geopark Kaldera Raksasa',
+    description: 'Danau vulkanik luas berair sejuk dengan warisan budaya Batak Toba yang otentik dan memukau.',
+    image: 'https://images.unsplash.com/photo-1570789210967-2cac24afeb00?auto=format&fit=crop&w=1600&q=85',
+    ctaText: 'Eksplorasi Danau Toba',
+    ctaLink: '#destinations',
+    order: 6
+  }
+]
+const heroBanners = ref([...defaultBanners])
+
+function nextSlide() {
+  if (heroBanners.value.length === 0) return
+  currentSlide.value = (currentSlide.value + 1) % heroBanners.value.length
+}
+
+function prevSlide() {
+  if (heroBanners.value.length === 0) return
+  currentSlide.value = (currentSlide.value - 1 + heroBanners.value.length) % heroBanners.value.length
+}
+
+function goToSlide(idx) {
+  currentSlide.value = idx
+}
+
+async function fetchBanners() {
+  try {
+    const res = await $fetch('http://localhost:8000/api/v1/banners').catch(() => $fetch('http://localhost:8000/api/banners'))
+    if (res && res.data && res.data.length > 0) {
+      heroBanners.value = res.data
+    }
+  } catch (err) {
+    console.warn('Menggunakan default hero banners:', err)
+  }
+}
+
 // Filters
 const hotelFilterQuery = ref('')
 const hotelFilterStar = ref('')
@@ -775,6 +946,7 @@ async function fetchBlogs() {
 }
 
 function refreshAllData() {
+  fetchBanners()
   fetchDestinations()
   fetchHotels()
   fetchFlights()
@@ -807,80 +979,98 @@ onMounted(() => {
   width: 100%;
   z-index: 100;
   margin: 0;
-  padding: 1rem 0;
-  background: rgba(10, 15, 29, 0.92);
+  padding: 0.5rem 0;
+  background: rgba(10, 15, 29, 0.94);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 0;
-  box-shadow: none;
-  transition: background var(--transition-fast), border-color var(--transition-fast);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  transition: all var(--transition-fast);
 }
 
 .nav-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
+  gap: 1rem;
   position: relative;
 }
 
 .brand-group {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.65rem;
+  flex-shrink: 0;
 }
 
 .brand-logo {
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   background: var(--primary-gradient);
-  border-radius: var(--radius-sm);
+  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.35);
+  flex-shrink: 0;
 }
 
 .logo-icon {
-  font-size: 1.4rem;
+  font-size: 1.15rem;
 }
 
 .brand-title {
-  font-size: 1.35rem;
+  font-size: 1.125rem;
+  font-weight: 700;
   letter-spacing: -0.02em;
+  line-height: 1.15;
+  white-space: nowrap;
 }
 
 .brand-subtitle {
-  font-size: 0.72rem;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font-size: 0.65rem;
+  color: var(--text-dim, #94a3b8);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  margin-top: 1px;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 1.75rem;
+  gap: 0.35rem;
+  flex-shrink: 0;
 }
 
 .nav-link {
-  color: var(--text-muted);
+  color: var(--text-muted, #94a3b8);
   text-decoration: none;
   font-weight: 500;
-  font-size: 0.95rem;
-  transition: color var(--transition-fast);
+  font-size: 0.84rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  transition: all var(--transition-fast, 0.15s ease);
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.nav-link.active {
   color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  font-weight: 600;
 }
 
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.6rem;
+  flex-shrink: 0;
 }
 
 .notification-container {
@@ -888,31 +1078,44 @@ onMounted(() => {
 }
 
 .btn-icon {
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  font-size: 1.15rem;
+  font-size: 1rem;
+  border-radius: 8px;
+}
+
+.btn-nav-cta {
+  padding: 0.45rem 0.95rem !important;
+  font-size: 0.825rem !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.35) !important;
 }
 
 .notif-badge {
   position: absolute;
-  top: -4px;
-  right: -4px;
+  top: -3px;
+  right: -3px;
   background: var(--accent-gradient, linear-gradient(135deg, #f43f5e, #e11d48));
   color: #fff;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 700;
-  min-width: 18px;
-  height: 18px;
-  border-radius: 9px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 4px;
+  padding: 0 3px;
   box-shadow: 0 2px 6px rgba(244, 63, 94, 0.4);
 }
 
@@ -1008,7 +1211,299 @@ onMounted(() => {
 }
 
 .hero-header {
-  margin-bottom: 2.75rem;
+  margin-bottom: 2rem;
+}
+
+/* Hero Banner Carousel Slider (6 Destinasi Unggulan Nusantara) */
+.hero-banner-slider {
+  margin-bottom: 2.5rem;
+  width: 100%;
+}
+
+.slider-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 16px 48px -8px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.slider-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: scale(1.02);
+  display: flex;
+  align-items: flex-end;
+  padding: 2.5rem 3.5rem;
+  z-index: 1;
+}
+
+.slider-slide.active {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  z-index: 2;
+}
+
+/* Gradient Vignette: Deep rich contrast behind text, translucent across rest of photo */
+.slide-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 15, 29, 0.15) 0%,
+    rgba(10, 15, 29, 0.45) 50%,
+    rgba(10, 15, 29, 0.92) 100%
+  ),
+  linear-gradient(
+    90deg,
+    rgba(10, 15, 29, 0.85) 0%,
+    rgba(10, 15, 29, 0.4) 60%,
+    rgba(10, 15, 29, 0.1) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+.slide-content {
+  position: relative;
+  z-index: 2;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  animation: slideFadeUp 0.5s ease-out;
+}
+
+@keyframes slideFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.slide-badge {
+  background: rgba(37, 99, 235, 0.85);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+}
+
+.slide-location {
+  font-size: 0.85rem;
+  color: #e2e8f0;
+  font-weight: 500;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.slide-title {
+  font-size: clamp(1.4rem, 3.2vw, 2.1rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.2;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+  letter-spacing: -0.02em;
+}
+
+.slide-desc {
+  font-size: 0.92rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.slide-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.btn-slide {
+  padding: 0.55rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.btn-slide-alt {
+  padding: 0.55rem 1.15rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+}
+
+.btn-slide-alt:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: translateY(-2px);
+}
+
+/* Nav Buttons: Left (Prev) & Right (Next) */
+.slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  font-size: 1.75rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.slider-btn:hover {
+  background: rgba(37, 99, 235, 0.9);
+  border-color: #3b82f6;
+  color: #ffffff;
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.6);
+}
+
+.slider-btn-prev {
+  left: 1.25rem;
+  padding-right: 2px;
+}
+
+.slider-btn-next {
+  right: 1.25rem;
+  padding-left: 2px;
+}
+
+/* Bottom Footer (Counter & Dots) */
+.slider-footer {
+  position: absolute;
+  bottom: 1.25rem;
+  right: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  z-index: 10;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(10px);
+  padding: 0.4rem 0.85rem;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.slider-counter {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.slider-counter .current-num {
+  color: #38bdf8;
+}
+
+.slider-counter .sep {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.slider-counter .total-num {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.slider-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.slider-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.25s ease;
+}
+
+.slider-dot:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.slider-dot.active {
+  width: 22px;
+  background: #38bdf8;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
+}
+
+@media (max-width: 768px) {
+  .slider-container {
+    height: 340px;
+  }
+  .slider-slide {
+    padding: 1.75rem 1.5rem;
+  }
+  .slider-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1.4rem;
+  }
+  .slider-btn-prev {
+    left: 0.5rem;
+  }
+  .slider-btn-next {
+    right: 0.5rem;
+  }
+  .slider-footer {
+    bottom: 0.75rem;
+    right: 0.75rem;
+    gap: 0.75rem;
+  }
 }
 
 .text-center {
